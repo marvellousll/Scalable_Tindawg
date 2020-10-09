@@ -2,10 +2,17 @@
 
 Welcome to Tindawg!
 
-Creators of Tindawg:\
-Yining Wang,\
-Yuan Chen,\
-Haoyang Wang,\
+Creators of Tindawg:
+
+Yining Wang
+![Yining Wang](creators/YiningWang.jpg)
+
+Yuan Chen
+![Yuan Chen](creators/YuanChen.jpg)
+
+Haoyang Wang,
+![Haoyang Wang](creators/HaoyangWang.jpg)
+
 Chenglai Huang
 
 

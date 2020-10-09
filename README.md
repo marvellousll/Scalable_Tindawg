@@ -14,7 +14,7 @@ Haoyang Wang,
 ![Haoyang Wang](creators/HaoyangWang.jpg)
 
 Chenglai Huang
-
+![Chenglai Huang](creators/ChenglaiHuang.jpg)
 
 ## Dependencies
 

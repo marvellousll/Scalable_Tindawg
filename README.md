@@ -3,10 +3,10 @@
 Welcome to Tindawg!
 
 Creators of Tindawg:
-Yining Wang
-Yuan Chen
-Haoyang Wang
-Chenglai Huang
+Yining Wang,\
+Yuan Chen,\
+Haoyang Wang,\
+Chenglai Huang\
 
 
 ## Dependencies

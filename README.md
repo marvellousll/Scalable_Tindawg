@@ -7,8 +7,8 @@ Creators of Tindawg:
 Yining Wang
 ![Yining Wang](creators/YiningWang.jpg)
 
-Yuan Chen
-![Yuan Chen](creators/YuanChen.jpg)
+Yuan Cheng
+![Yuan Cheng](creators/YuanCheng.jpg)
 
 Haoyang Wang,
 ![Haoyang Wang](creators/HaoyangWang.jpg)

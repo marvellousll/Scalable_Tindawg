@@ -2,11 +2,11 @@
 
 Welcome to Tindawg!
 
-Creators of Tindawg:
+Creators of Tindawg:\
 Yining Wang,\
 Yuan Chen,\
 Haoyang Wang,\
-Chenglai Huang\
+Chenglai Huang
 
 
 ## Dependencies

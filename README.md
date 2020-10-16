@@ -16,6 +16,23 @@ Haoyang Wang,
 Chenglai Huang
 ![Chenglai Huang](creators/ChenglaiHuang.jpg)
 
+
+Some Helpful Guilds
+
+How to guild: 
+https://github.com/rothfels/bespin/wiki/How-To-Guide
+
+Troubleshooting:
+https://github.com/rothfels/bespin/wiki/Troubleshooting
+
+TypeORM:
+https://typeorm.io/#/
+
+StoryBook.js
+https://storybook.js.org/
+
+
+
 ## Dependencies
 
 For the [Quickstart](https://github.com/rothfels/bespin#Quickstart), you will need:

@@ -17,7 +17,7 @@ Chenglai Huang
 ![Chenglai Huang](creators/ChenglaiHuang.jpg)
 
 
-##Some Helpful Guilds
+## Some Helpful Guilds
 
 How to guild: 
 https://github.com/rothfels/bespin/wiki/How-To-Guide

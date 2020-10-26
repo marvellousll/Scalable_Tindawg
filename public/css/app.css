@@ -52,10 +52,10 @@
   * GLOBAL STYLES
   */
 
- /* html,
+ html,
  body {
-   background-color: #111;
- } */
+   overflow: hidden
+ }
 
  /*
   * CSS3 ANIMATIONS

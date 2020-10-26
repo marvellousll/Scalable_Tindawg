@@ -30,6 +30,10 @@ const otherTabs = [
     name: 'playground',
     path: getPath(Route.PLAYGROUND),
   },
+  {
+    name: 'explore',
+    path: getPath(Route.EXPLORE),
+  },
 ]
 
 export function NavBar() {

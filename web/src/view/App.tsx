@@ -15,6 +15,7 @@ import { HomePage } from './page/HomePage'
 import { LecturesPage } from './page/LecturesPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
 import { ProjectsPage } from './page/ProjectsPage'
+import { Signup } from './profile/signup'
 
 const Styletron = require('styletron-engine-monolithic')
 
@@ -51,8 +52,9 @@ export function AppBody() {
   return (
     <>
       <Router className={bodyClass}>
-        <Redirect noThrow from="app" to="index" />
+        <Redirect noThrow from="app" to="profile" />
         <Redirect noThrow from="app/playground" to="surveys" />
+        <Signup path={Route.PROFILE} />
         <HomePage path={Route.HOME} />
         <ExplorePage path={Route.EXPLORE} />
         <LecturesPage path={Route.LECTURES} />

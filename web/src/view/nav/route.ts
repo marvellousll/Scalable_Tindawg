@@ -11,6 +11,7 @@ export enum Route {
   PLAYGROUND = 'app/playground',
   PLAYGROUND_APP = 'app/playground/:app',
   EXPLORE = 'app/explore',
+  PROFILE = 'app/profile',
 }
 
 export enum PlaygroundApp {

@@ -8,7 +8,9 @@ import { getApolloClient } from '../graphql/apolloClient'
 import { FetchUserContext } from '../graphql/query.gen'
 import { style } from '../style/styled'
 import { fetchUser } from './auth/fetchUser'
+//import { Login } from './auth/Login'
 import { UserContext, UserCtx } from './auth/user'
+import { LoginSignup } from './loginsignup/LoginSignup'
 import { Route } from './nav/route'
 import { ExplorePage } from './page/ExplorePage'
 import { HomePage } from './page/HomePage'
@@ -16,7 +18,6 @@ import { LecturesPage } from './page/LecturesPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
 import { ProjectsPage } from './page/ProjectsPage'
 import { Signup } from './profile/Signup'
-
 const Styletron = require('styletron-engine-monolithic')
 
 export function init() {
@@ -55,6 +56,7 @@ export function AppBody() {
         <Redirect noThrow from="app" to="profile" />
         <Redirect noThrow from="app/playground" to="surveys" />
         <Signup path={Route.PROFILE} />
+        <LoginSignup path={Route.LOGIN}/>
         <HomePage path={Route.HOME} />
         <ExplorePage path={Route.EXPLORE} />
         <LecturesPage path={Route.LECTURES} />

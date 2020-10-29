@@ -34,6 +34,10 @@ const otherTabs = [
     name: 'explore',
     path: getPath(Route.EXPLORE),
   },
+  {
+    name: 'match',
+    path: getPath(Route.MATCH),
+  }
 ]
 
 export function NavBar() {

@@ -13,6 +13,7 @@ export enum Route {
   EXPLORE = 'app/explore',
   PROFILE = 'app/profile',
   MATCH = 'app/match',
+  NEW = 'app/new',
 }
 
 export enum PlaygroundApp {

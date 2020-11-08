@@ -14,6 +14,7 @@ import { ExplorePage } from './page/ExplorePage'
 import { HomePage } from './page/HomePage'
 import { LecturesPage } from './page/LecturesPage'
 import { MatchPage } from './page/MatchPage'
+import { NewPage } from './page/NewPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
 import { ProjectsPage } from './page/ProjectsPage'
 import { Signup } from './profile/Signup'
@@ -59,6 +60,7 @@ export function AppBody() {
         <HomePage path={Route.HOME} />
         <ExplorePage path={Route.EXPLORE} />
         <MatchPage path={Route.MATCH} />
+        <NewPage path={Route.NEW} />
         <LecturesPage path={Route.LECTURES} />
         <ProjectsPage path={Route.PROJECTS} />
         <PlaygroundPage path={Route.PLAYGROUND} />

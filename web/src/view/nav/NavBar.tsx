@@ -37,6 +37,10 @@ const otherTabs = [
   {
     name: 'match',
     path: getPath(Route.MATCH),
+  },
+  {
+    name: 'new',
+    path: getPath(Route.NEW),
   }
 ]
 

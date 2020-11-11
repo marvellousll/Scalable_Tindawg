@@ -1,59 +1,86 @@
-import { RouteComponentProps } from '@reach/router'
-import * as React from 'react'
-import { ColorName, Colors } from '../../../../common/src/colors'
-import { H1, H3 } from '../../style/header'
-import { style } from '../../style/styled'
-import Cards from '../card/Card'
-import { AppRouteParams } from '../nav/route'
-import { Page } from './Page'
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import { makeStyles } from '@material-ui/core/styles';
+import { RouteComponentProps } from '@reach/router';
+import * as React from 'react';
+import { AppRouteParams } from '../nav/route';
+import { Page } from './Page';
 
-interface MatchPageProps extends RouteComponentProps, AppRouteParams {}
+interface ExplorePageProps extends RouteComponentProps, AppRouteParams {}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
+  },
+  gridList: {
+    width: 500,
+    height: 450,
+  },
+}));
+
+const tileData = [
+    {
+      img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
+      title: 'Image',
+      author: 'author',
+      cols: 3,
+    },
+    {
+      img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
+      title: 'Image',
+      author: 'author',
+      cols: 3,
+    },
+    {
+      img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
+      title: 'Image',
+      author: 'author',
+      cols: 3,
+    },
+    {
+      img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
+      title: 'Image',
+      author: 'author',
+      cols: 3,
+    },
+    {
+      img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
+      title: 'Image',
+      author: 'author',
+      cols: 3,
+    },
+    {
+      img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
+      title: 'Image',
+      author: 'author',
+      cols: 3,
+    },
+    {
+      img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
+      title: 'Image',
+      author: 'author',
+      cols: 3,
+    },
+  ];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function MatchPage(props: MatchPageProps) {
+export function MatchPage(props: ExplorePageProps) {
+  const classes = useStyles();
   return (
     <Page>
-      <Hero>
-        <H1>MATCHES</H1>
-        <H3>Your Favorite Dawgs</H3>
-      </Hero>
-      <Content>
-        <LContent>
-          <Section>
-            <Cards/>
-          </Section>
-          <Section>
-            <Cards/>
-          </Section>
-        </LContent>
-        <RContent>
-          <Section>
-           <Cards/>
-          </Section>
-          <Section>
-            <Cards/>
-          </Section>
-        </RContent>
-      </Content>
+    <div className={classes.root}>
+      <GridList cellHeight={200} className={classes.gridList} cols={3}>
+        {tileData.map((tile) => (
+          <GridListTile key={tile.img} cols={tile.cols || 1}>
+            <img src={tile.img} alt={tile.title} />
+          </GridListTile>
+        ))}
+      </GridList>
+    </div>
     </Page>
-  )
+  );
 }
-
-const Hero = style('div', 'mb4 w-120 ba b--mid-gray br2 pa3 tc', {
-  borderLeftColor: Colors.lemon + '!important',
-  borderRightColor: Colors.lemon + '!important',
-  borderLeftWidth: '4px',
-  borderRightWidth: '4px',
-})
-
-const Content = style('div', 'flex-l')
-
-const LContent = style('div', 'flex-grow-0 w-60-l mr4-l')
-
-const RContent = style('div', 'flex-grow-0 w-60-l mr4-l')
-
-const Section = style('div', 'mb4 mid-gray ba b--mid-gray br2 pa3', (p: { $color?: ColorName }) => ({
-  borderLeftColor: Colors[p.$color || 'lemon'] + '!important',
-  borderLeftWidth: '3px',
-}))
-

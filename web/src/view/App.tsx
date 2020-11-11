@@ -54,8 +54,7 @@ export function AppBody() {
   return (
     <>
       <Router className={bodyClass}>
-        <Redirect noThrow from="app" to="profile" />
-        <Redirect noThrow from="app/playground" to="surveys" />
+        <Redirect noThrow from="app" to="explore" />
         <Signup path={Route.PROFILE} />
         <HomePage path={Route.HOME} />
         <ExplorePage path={Route.EXPLORE} />

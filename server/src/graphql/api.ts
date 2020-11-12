@@ -27,11 +27,9 @@ interface Context {
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
-    survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
-    surveys: () => Survey.find(),
     getUserById: async (_, { userId }) => (await User.findOne({ where: { id: userId } })) || null,
-    // TODO: replace id to cts.user.id
-    getUserByLocation: async (_, { location }, ctx) =>
+    // TODO: replace id to ctx.user.id
+    getPotentialMatches: async (_, { location }, ctx) =>
       (await User.createQueryBuilder('user')
         .where('user.id != :id', { id: 1 })
         .andWhere('user.location = :location', { location: location })
@@ -44,6 +42,7 @@ export const graphqlRoot: Resolvers<Context> = {
         })
         .limit(10)
         .getMany()) || null,
+    // TODO: replace id to ctx.user.id
     getMatches: async (_, args, ctx) =>
       (await User.createQueryBuilder('user')
         .where(() => {
@@ -78,6 +77,24 @@ export const graphqlRoot: Resolvers<Context> = {
       await survey.save()
       ctx.pubsub.publish('SURVEY_UPDATE_' + surveyId, survey)
       return survey
+    },
+    // TODO: replace id to ctx.user.id
+    changeUserInfo: async (_, { input }, ctx) => {
+      const user = check(await User.findOne({ where: { id: 1 } }))
+      Object.assign(user, input)
+      await User.save(user)
+      return user
+    },
+    // TODO: replace userid to ctx.user.id
+    //       replace swipeid to a new, distinct id
+    swipeLeft: async (_, { userId }, ctx) => {
+      const swipe = new SwipeLeft()
+      swipe.id = 99 + userId
+      swipe.swipedLeftBy = check(await User.findOne({ where: { id: 1 } }))
+      swipe.swipedLeftOn = check(await User.findOne({ where: { id: userId } }))
+
+      await swipe.save()
+      return true
     },
   },
   Subscription: {

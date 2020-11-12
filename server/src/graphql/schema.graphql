@@ -20,7 +20,7 @@ type Query {
   surveys: [Survey!]!
   survey (surveyId: Int!): Survey
   getUserById (userId: Int!) : User
-  getUserByLocation (location: String!) : [User]
+  getPotentialMatches (location: String!) : [User]
   getMatches: [User]
 }
 
@@ -30,7 +30,9 @@ type Mutation {
 
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
   nextSurveyQuestion (surveyId: Int!): Survey
-  addUser (input: UserInput!) : User
+  changeUserInfo (input: UserInput!) : User
+  swipeLeft(userId: Int!): Boolean!
+  swipeRight(userId: Int!): Boolean!
 }
 
 type Subscription {
@@ -100,15 +102,13 @@ input SurveyInput {
 }
 
 input UserInput {
-  id: Int!
-  userType: UserType!
-  email: String!
-  name: String!
-  location: String!
-  dogName: String!
+  email: String
+  name: String
+  location: String
+  dogName: String
   dogAge: Int
   dogBreed: String
   dogIsMale: Boolean
   bio: String
-  imageURL: String!
+  imageURL: String
 }

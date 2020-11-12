@@ -18,7 +18,7 @@ export interface Query {
   surveys: Array<Survey>
   survey?: Maybe<Survey>
   getUserById?: Maybe<User>
-  getUserByLocation?: Maybe<Array<Maybe<User>>>
+  getPotentialMatches?: Maybe<Array<Maybe<User>>>
   getMatches?: Maybe<Array<Maybe<User>>>
 }
 
@@ -30,7 +30,7 @@ export interface QueryGetUserByIdArgs {
   userId: Scalars['Int']
 }
 
-export interface QueryGetUserByLocationArgs {
+export interface QueryGetPotentialMatchesArgs {
   location: Scalars['String']
 }
 
@@ -38,7 +38,9 @@ export interface Mutation {
   __typename?: 'Mutation'
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
-  addUser?: Maybe<User>
+  changeUserInfo?: Maybe<User>
+  swipeLeft: Scalars['Boolean']
+  swipeRight: Scalars['Boolean']
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -49,8 +51,16 @@ export interface MutationNextSurveyQuestionArgs {
   surveyId: Scalars['Int']
 }
 
-export interface MutationAddUserArgs {
+export interface MutationChangeUserInfoArgs {
   input: UserInput
+}
+
+export interface MutationSwipeLeftArgs {
+  userId: Scalars['Int']
+}
+
+export interface MutationSwipeRightArgs {
+  userId: Scalars['Int']
 }
 
 export interface Subscription {
@@ -114,17 +124,15 @@ export interface SurveyInput {
 }
 
 export interface UserInput {
-  id: Scalars['Int']
-  userType: UserType
-  email: Scalars['String']
-  name: Scalars['String']
-  location: Scalars['String']
-  dogName: Scalars['String']
+  email?: Maybe<Scalars['String']>
+  name?: Maybe<Scalars['String']>
+  location?: Maybe<Scalars['String']>
+  dogName?: Maybe<Scalars['String']>
   dogAge?: Maybe<Scalars['Int']>
   dogBreed?: Maybe<Scalars['String']>
   dogIsMale?: Maybe<Scalars['Boolean']>
   bio?: Maybe<Scalars['String']>
-  imageURL: Scalars['String']
+  imageURL?: Maybe<Scalars['String']>
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -253,11 +261,11 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetUserByIdArgs, 'userId'>
   >
-  getUserByLocation?: Resolver<
+  getPotentialMatches?: Resolver<
     Maybe<Array<Maybe<ResolversTypes['User']>>>,
     ParentType,
     ContextType,
-    RequireFields<QueryGetUserByLocationArgs, 'location'>
+    RequireFields<QueryGetPotentialMatchesArgs, 'location'>
   >
   getMatches?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>
 }
@@ -278,11 +286,23 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationNextSurveyQuestionArgs, 'surveyId'>
   >
-  addUser?: Resolver<
+  changeUserInfo?: Resolver<
     Maybe<ResolversTypes['User']>,
     ParentType,
     ContextType,
-    RequireFields<MutationAddUserArgs, 'input'>
+    RequireFields<MutationChangeUserInfoArgs, 'input'>
+  >
+  swipeLeft?: Resolver<
+    ResolversTypes['Boolean'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationSwipeLeftArgs, 'userId'>
+  >
+  swipeRight?: Resolver<
+    ResolversTypes['Boolean'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationSwipeRightArgs, 'userId'>
   >
 }
 

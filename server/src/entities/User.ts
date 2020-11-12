@@ -65,8 +65,4 @@ export class User extends BaseEntity implements GraphqlUser {
 
   @Column()
   dogIsMale: boolean
-
-  //only matters when male
-  @Column()
-  dogIsCastrated: boolean
 }

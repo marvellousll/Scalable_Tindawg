@@ -7,6 +7,7 @@ import { Survey } from '../entities/Survey'
 import { SurveyAnswer } from '../entities/SurveyAnswer'
 import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { SwipeLeft } from '../entities/SwipeLeft'
+import { SwipeRight } from '../entities/SwipeRight'
 import { User } from '../entities/User'
 import { Resolvers } from './schema.types'
 
@@ -35,8 +36,8 @@ export const graphqlRoot: Resolvers<Context> = {
         .andWhere('user.location = :location', { location: location })
         .andWhere(() => {
           const query = SwipeLeft.createQueryBuilder('swiped')
-            .select('swiped.SwipedLeftOnId')
-            .where('swiped.SwipedLeftById = :id', { id: 1 })
+            .select('swiped.swipedLeftOnId')
+            .where('swiped.swipedLeftById = :id', { id: 1 })
             .getQuery()
           return 'user.id NOT IN (' + query + ')'
         })
@@ -82,18 +83,58 @@ export const graphqlRoot: Resolvers<Context> = {
     changeUserInfo: async (_, { input }, ctx) => {
       const user = check(await User.findOne({ where: { id: 1 } }))
       Object.assign(user, input)
-      await User.save(user)
+      await user.save()
       return user
     },
     // TODO: replace userid to ctx.user.id
-    //       replace swipeid to a new, distinct id
     swipeLeft: async (_, { userId }, ctx) => {
       const swipe = new SwipeLeft()
+      //TODO: generate a new, distinct id
       swipe.id = 99 + userId
-      swipe.swipedLeftBy = check(await User.findOne({ where: { id: 1 } }))
-      swipe.swipedLeftOn = check(await User.findOne({ where: { id: userId } }))
+
+      swipe.swipedLeftBy = new User()
+      swipe.swipedLeftBy.id = 1
+      swipe.swipedLeftOn = new User()
+      swipe.swipedLeftOn.id = userId
 
       await swipe.save()
+      return true
+    },
+    swipeRight: async (_, { userId }, ctx) => {
+      const swipe = new SwipeRight()
+      //TODO: generate a new, distinct id
+      swipe.id = 99 + userId
+      swipe.swipedRightBy = new User()
+      swipe.swipedRightBy.id = 1
+      swipe.swipedRightOn = new User()
+      swipe.swipedRightOn.id = userId
+      await swipe.save()
+
+      if (
+        await SwipeRight.createQueryBuilder('swipe')
+          .where('swipe.swipedRightOnId = :id', { id: 1 })
+          .andWhere('swipe.swipedRightById = :id2', { id2: userId })
+          .getOne()
+      ) {
+        const match = new Matching()
+        //TODO: generate a new, distinct id
+        match.id = 99 + userId
+        match.user1 = new User()
+        match.user1.id = 1
+        match.user2 = new User()
+        match.user2.id = userId
+        await match.save()
+
+        const revMatch = new Matching()
+        //TODO: generate a new, distinct id
+        revMatch.id = 999 + userId
+        revMatch.user1 = new User()
+        revMatch.user1.id = userId
+        revMatch.user2 = new User()
+        revMatch.user2.id = 1
+        await revMatch.save()
+      }
+
       return true
     },
   },

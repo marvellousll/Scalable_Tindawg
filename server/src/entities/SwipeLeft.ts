@@ -1,15 +1,13 @@
-import { BaseEntity, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { User } from './User'
 @Entity()
 export class SwipeLeft extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @OneToOne(type => User)
-  @JoinColumn()
-  swipedLeftby: User
+  @ManyToOne(type => User)
+  swipedLeftBy: User
 
-  @OneToOne(type => User)
-  @JoinColumn()
-  swipedLefton: User
+  @ManyToOne(type => User)
+  swipedLeftOn: User
 }

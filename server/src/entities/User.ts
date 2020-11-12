@@ -34,6 +34,12 @@ export class User extends BaseEntity implements GraphqlUser {
     length: 100,
     nullable: false,
   })
+  location: string
+
+  @Column({
+    length: 100,
+    nullable: false,
+  })
   dogName: string
 
   @Column()
@@ -49,7 +55,7 @@ export class User extends BaseEntity implements GraphqlUser {
     length: 100,
     nullable: true,
   })
-  Bio: string
+  bio: string
 
   @Column({
     length: 100,
@@ -59,8 +65,4 @@ export class User extends BaseEntity implements GraphqlUser {
 
   @Column()
   dogIsMale: boolean
-
-  //only matters when male
-  @Column()
-  dogIsCastrated: boolean
 }

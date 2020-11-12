@@ -1,7 +1,6 @@
 import Button from '@material-ui/core/Button'
 import { red } from '@material-ui/core/colors'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import Link from '@material-ui/core/Link'
 import Paper from '@material-ui/core/Paper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
@@ -17,18 +16,6 @@ import { Information } from './Information'
 
 interface SignupProps extends RouteComponentProps, AppRouteParams {}
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
 const stepTheme = createMuiTheme({
   overrides: {
     MuiStepIcon: {
@@ -164,7 +151,6 @@ export function Signup(props: SignupProps) {
             )}
           </React.Fragment>
         </Paper>
-        <Copyright />
       </main>
     </React.Fragment>
   )

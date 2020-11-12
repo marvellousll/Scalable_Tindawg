@@ -12,27 +12,19 @@ import { link } from './Link'
 import { getLoginPath, getPath, getSurveyPath, Route } from './route'
 
 const title = {
-  name: 'CS188',
-  path: getPath(Route.HOME),
+  name: 'Tindawg',
+  path: getPath(Route.LOGIN),
   title: true,
 }
 
 const otherTabs = [
   {
-    name: 'lectures',
-    path: getPath(Route.LECTURES),
-  },
-  {
-    name: 'projects',
-    path: getPath(Route.PROJECTS),
-  },
-  {
-    name: 'playground',
-    path: getPath(Route.PLAYGROUND),
-  },
-  {
     name: 'explore',
     path: getPath(Route.EXPLORE),
+  },
+  {
+    name: 'profile',
+    path: getPath(Route.PROFILE),
   },
 ]
 

@@ -6,18 +6,16 @@ import { Provider as StyletronProvider } from 'styletron-react'
 import { appContext } from '../../../common/src/context'
 import { getApolloClient } from '../graphql/apolloClient'
 import { FetchUserContext } from '../graphql/query.gen'
-import { style } from '../style/styled'
 import { fetchUser } from './auth/fetchUser'
-//import { Login } from './auth/Login'
 import { UserContext, UserCtx } from './auth/user'
-import { LoginSignup } from './loginsignup/LoginSignup'
 import { Route } from './nav/route'
 import { ExplorePage } from './page/ExplorePage'
 import { HomePage } from './page/HomePage'
 import { LecturesPage } from './page/LecturesPage'
+import { LoginPage } from './page/LoginPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
+import { ProfilePage } from './page/ProfilePage'
 import { ProjectsPage } from './page/ProjectsPage'
-import { Signup } from './profile/Signup'
 const Styletron = require('styletron-engine-monolithic')
 
 export function init() {
@@ -55,8 +53,8 @@ export function AppBody() {
       <Router className={bodyClass}>
         <Redirect noThrow from="app" to="profile" />
         <Redirect noThrow from="app/playground" to="surveys" />
-        <Signup path={Route.PROFILE} />
-        <LoginSignup path={Route.LOGIN}/>
+        <ProfilePage path={Route.PROFILE} />
+        <LoginPage path={Route.LOGIN} />
         <HomePage path={Route.HOME} />
         <ExplorePage path={Route.EXPLORE} />
         <LecturesPage path={Route.LECTURES} />
@@ -64,15 +62,8 @@ export function AppBody() {
         <PlaygroundPage path={Route.PLAYGROUND} />
         <PlaygroundPage path={Route.PLAYGROUND_APP} />
       </Router>
-      <Footer>
-        <FooterText>© 2020 John Rothfels</FooterText>
-      </Footer>
     </>
   )
 }
 
 const bodyClass = 'flex flex-column items-center mh2 mh3-ns mh5-l pt6 min-vh-100 sans-serif'
-
-const Footer = style('footer', 'fixed flex items-center bottom-0 w-100')
-
-const FooterText = style('small', 'mid-gray avenir', { margin: 'auto', opacity: '0.2' })

@@ -17,9 +17,11 @@ schema {
 type Query {
   # Returns the logged-in user making the query, or null if anonymous.
   self: User
-
   surveys: [Survey!]!
   survey (surveyId: Int!): Survey
+  getUserById (userId: Int!) : User
+  getUserByLocation (location: String!) : [User]
+  getMatches: [User]
 }
 
 type Mutation {
@@ -28,6 +30,7 @@ type Mutation {
 
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
   nextSurveyQuestion (surveyId: Int!): Survey
+  addUser (input: UserInput!) : User
 }
 
 type Subscription {
@@ -39,6 +42,13 @@ type User {
   userType: UserType!
   email: String!
   name: String!
+  location: String!
+  dogName: String!
+  dogAge: Int
+  dogBreed: String
+  dogIsMale: Boolean
+  bio: String
+  imageURL: String!
 }
 
 enum UserType { ADMIN, USER }
@@ -89,3 +99,16 @@ input SurveyInput {
   answer: String!
 }
 
+input UserInput {
+  id: Int!
+  userType: UserType!
+  email: String!
+  name: String!
+  location: String!
+  dogName: String!
+  dogAge: Int
+  dogBreed: String
+  dogIsMale: Boolean
+  bio: String
+  imageURL: String!
+}

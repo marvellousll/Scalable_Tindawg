@@ -7,9 +7,9 @@ export class SwipeLeft extends BaseEntity {
 
   @OneToOne(type => User)
   @JoinColumn()
-  swipedLeftby: User
+  swipedLeftBy: User
 
   @OneToOne(type => User)
   @JoinColumn()
-  swipedLefton: User
+  swipedLeftOn: User
 }

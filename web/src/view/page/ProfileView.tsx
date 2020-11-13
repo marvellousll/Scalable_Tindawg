@@ -46,10 +46,11 @@ export function ProfileView(props: { onClose: any; open: any }) {
             Chewie
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
-            Gender: Male
-            <br />
+            Gender: Male <br />
             Age: 4<br />
             Breed: Golden Retriever <br />
+            Owner Name：Nick <br />
+            Owner Email: Nickhasacutepuppy@puppy.com
           </Typography>
           <Typography variant="body2" component="p">
             He loves eating chicken and playing with other dogs.

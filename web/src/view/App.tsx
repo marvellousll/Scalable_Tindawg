@@ -49,7 +49,7 @@ export function AppBody() {
   return (
     <>
       <Router className={bodyClass}>
-        <Redirect noThrow from="app" to="profile" />
+        <Redirect noThrow from="app" to="login" />
         <Redirect noThrow from="app/playground" to="surveys" />
         <EditProfilePage path={Route.EDIT} />
         <LoginPage path={Route.LOGIN} />

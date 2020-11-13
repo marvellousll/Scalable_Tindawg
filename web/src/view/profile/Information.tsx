@@ -48,7 +48,7 @@ export function Information() {
         <Grid item xs={12}>
           <TextField
             label="Description"
-            placeholder="What is the special thing of your dog?"
+            placeholder="What is special about your dog?"
             multiline
             fullWidth
             rows={4}

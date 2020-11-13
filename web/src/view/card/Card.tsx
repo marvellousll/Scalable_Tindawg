@@ -5,6 +5,7 @@ import * as React from 'react'
 import { useMemo, useState } from 'react'
 import TinderCard from 'react-tinder-card'
 import { buttonsStyle, cardStyle, tagStyle, viewportStyle } from '../../style/card'
+import { ProfileView } from '../page/ProfileView'
 
 const db = [
   {
@@ -30,6 +31,14 @@ let charactersState = db // This fixes issues with updating characters state for
 function Cards() {
   const [characters, setCharacters] = useState(db)
   const [lastDirection, setLastDirection] = useState<string>()
+  const [open, setOpen] = React.useState(false)
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
   console.log(lastDirection)
 
   const childRefs: React.RefObject<any>[] = useMemo(
@@ -66,24 +75,30 @@ function Cards() {
     <div>
       <div style={viewportStyle}>
         {characters.map((character, index) => (
-          <TinderCard
-            ref={childRefs[index]}
-            key={character.name}
-            onSwipe={dir => swiped(dir, character.name)}
-            onCardLeftScreen={() => outOfFrame(character.name)}
-          >
-            <div
-              style={{
-                ...cardStyle,
-                backgroundImage: 'url(https://i.insider.com/5df126b679d7570ad2044f3e?width=1100&format=jpeg&auto=webp)',
-                backgroundPosition: 'center',
-                backgroundSize: '200%',
-                backgroundRepeat: 'no-repeat',
-              }}
-            >
-              <h3 style={tagStyle}>{character.name}</h3>
+          <>
+            <div onClick={handleClickOpen}>
+              <TinderCard
+                ref={childRefs[index]}
+                key={character.name}
+                onSwipe={dir => swiped(dir, character.name)}
+                onCardLeftScreen={() => outOfFrame(character.name)}
+              >
+                <div
+                  style={{
+                    ...cardStyle,
+                    backgroundImage:
+                      'url(https://i.insider.com/5df126b679d7570ad2044f3e?width=1100&format=jpeg&auto=webp)',
+                    backgroundPosition: 'center',
+                    backgroundSize: '200%',
+                    backgroundRepeat: 'no-repeat',
+                  }}
+                >
+                  <h3 style={tagStyle}>{character.name}</h3>
+                </div>
+              </TinderCard>
             </div>
-          </TinderCard>
+            <ProfileView open={open} onClose={handleClose} />
+          </>
         ))}
         <div style={buttonsStyle}>
           <IconButton aria-label="delete" onClick={() => swipe('left')} style={{ boxShadow: '0 0 2px rgba(0,0,0,.2)' }}>

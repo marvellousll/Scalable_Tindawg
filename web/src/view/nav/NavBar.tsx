@@ -12,28 +12,24 @@ import { link } from './Link'
 import { getLoginPath, getPath, getSurveyPath, Route } from './route'
 
 const title = {
-  name: 'CS188',
-  path: getPath(Route.HOME),
+  name: 'TinDwag',
+  path: getPath(Route.EXPLORE),
   title: true,
 }
 
 const otherTabs = [
   {
-    name: 'lectures',
-    path: getPath(Route.LECTURES),
-  },
-  {
-    name: 'projects',
-    path: getPath(Route.PROJECTS),
-  },
-  {
-    name: 'playground',
-    path: getPath(Route.PLAYGROUND),
-  },
-  {
     name: 'explore',
     path: getPath(Route.EXPLORE),
   },
+  {
+    name: 'match',
+    path: getPath(Route.MATCH),
+  },
+  {
+    name: 'profile',
+    path: getPath(Route.NEW),
+  }
 ]
 
 export function NavBar() {

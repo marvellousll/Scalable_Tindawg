@@ -24,12 +24,8 @@ const otherTabs = [
     path: getPath(Route.EXPLORE),
   },
   {
-    name: 'profile',
-    path: getPath(Route.PROFILE),
-  },
-  {
-    name: 'signup',
-    path: getPath(Route.SIGNUP),
+    name: 'edit',
+    path: getPath(Route.EDIT),
   },
 ]
 

@@ -9,14 +9,10 @@ import { FetchUserContext } from '../graphql/query.gen'
 import { fetchUser } from './auth/fetchUser'
 import { UserContext, UserCtx } from './auth/user'
 import { Route } from './nav/route'
+import { EditProfilePage } from './page/EditProfilePage'
 import { ExplorePage } from './page/ExplorePage'
-import { HomePage } from './page/HomePage'
-import { LecturesPage } from './page/LecturesPage'
 import { LoginPage } from './page/LoginPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
-import { ProfilePage } from './page/ProfilePage'
-import { ProjectsPage } from './page/ProjectsPage'
-import { SignupPage } from './page/SignUpPage'
 
 const Styletron = require('styletron-engine-monolithic')
 
@@ -55,15 +51,11 @@ export function AppBody() {
       <Router className={bodyClass}>
         <Redirect noThrow from="app" to="profile" />
         <Redirect noThrow from="app/playground" to="surveys" />
-        <ProfilePage path={Route.PROFILE} />
+        <EditProfilePage path={Route.EDIT} />
         <LoginPage path={Route.LOGIN} />
-        <HomePage path={Route.HOME} />
         <ExplorePage path={Route.EXPLORE} />
-        <LecturesPage path={Route.LECTURES} />
-        <ProjectsPage path={Route.PROJECTS} />
         <PlaygroundPage path={Route.PLAYGROUND} />
         <PlaygroundPage path={Route.PLAYGROUND_APP} />
-        <SignupPage path={Route.SIGNUP} />
       </Router>
     </>
   )

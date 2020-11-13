@@ -1,3 +1,4 @@
+import { red } from '@material-ui/core/colors'
 import { useLocation } from '@reach/router'
 import * as React from 'react'
 import { useContext, useEffect } from 'react'
@@ -12,8 +13,8 @@ import { link } from './Link'
 import { getLoginPath, getPath, getSurveyPath, Route } from './route'
 
 const title = {
-  name: 'TinDwag',
-  path: getPath(Route.EXPLORE),
+  name: 'Tindawg',
+  path: getPath(Route.LOGIN),
   title: true,
 }
 
@@ -29,6 +30,10 @@ const otherTabs = [
   {
     name: 'profile',
     path: getPath(Route.NEW),
+  },
+  {
+    name: 'edit',
+    path: getPath(Route.EDIT),
   },
 ]
 
@@ -119,7 +124,9 @@ const Nav = style(
   'nav',
   'flex white items-center list pa2 ph4 ph5-ns ph7-l avenir f4',
   (p: { $isSubNav?: boolean }) => ({
-    background: `red`,
+    background: red[400],
+    // background: `linear-gradient(90deg, ${'#005587'} 0%, ${'#2774AE'} 100%)`,
+
     opacity: '0.9',
     paddingTop: p.$isSubNav ? 0 : undefined,
     paddingBottom: p.$isSubNav ? 0 : undefined,

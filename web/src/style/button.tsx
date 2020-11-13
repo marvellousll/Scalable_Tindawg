@@ -1,5 +1,6 @@
+import { red } from '@material-ui/core/colors'
 import * as React from 'react'
-import { ColorName, Colors } from '../../../common/src/colors'
+import { ColorName } from '../../../common/src/colors'
 import { style } from './styled'
 
 export interface ButtonProps {
@@ -31,7 +32,8 @@ const ButtonBase = style<'a', ButtonProps>('a', 'pointer link dim br3 ph3 pv2 bl
   // const colBg = $filled ? fg : 'transparent'
 
   return {
-    backgroundColor: Colors[p.$color || 'lemon'],
+    backgroundColor: red[400],
+    // backgroundColor: Colors[p.$color || 'steel'],
     // display: p.$block ? 'block' : 'inline',
     //   backgroundColor: colBg,
     //   border: `1px solid ${colBorder}`,

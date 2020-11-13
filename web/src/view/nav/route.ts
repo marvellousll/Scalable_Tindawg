@@ -14,6 +14,7 @@ export enum Route {
   PROFILE = 'app/profile',
   MATCH = 'app/match',
   NEW = 'app/profile',
+  LOGIN = 'app/login',
 }
 
 export enum PlaygroundApp {

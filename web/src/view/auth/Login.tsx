@@ -40,6 +40,28 @@ export function Login() {
       })
   }
 
+  function signup() {
+    if (!validate(email, password, setError)) {
+      toastErr('invalid email/name')
+      return
+    }
+
+    fetch('/auth/createUser', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
+      .then(res => {
+        check(res.ok, 'response status ' + res.status)
+        return res.text()
+      })
+      .then(() => (window.location.href = 'app/profile.com'))
+      .catch(err => {
+        toastErr(err.toString())
+        setError({ email: true, password: true })
+      })
+  }
+
   if (user) {
     return <Logout />
   }
@@ -59,7 +81,11 @@ export function Login() {
         <Input $hasError={err.password} $onChange={setPassword} $onSubmit={login} name="password" type="password" />
       </div>
       <div className="mt3">
-        <Button onClick={login}>Sign Up</Button>
+        <Button onClick={login}>Log In</Button>
+      </div>
+      <Spacer $h4></Spacer>
+      <div className="mt3">
+        <Button onClick={signup}>Sign Up</Button>
       </div>
     </>
   )

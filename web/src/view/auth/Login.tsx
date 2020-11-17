@@ -67,7 +67,7 @@ export function Login() {
   }
 
   return (
-    <>
+    <div style={{ width: '80%', margin: 'auto' }}>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="email">
           Email address
@@ -87,7 +87,7 @@ export function Login() {
       <div className="mt3">
         <Button onClick={signup}>Sign Up</Button>
       </div>
-    </>
+    </div>
   )
 }
 

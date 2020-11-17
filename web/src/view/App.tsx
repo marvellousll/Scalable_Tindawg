@@ -6,6 +6,7 @@ import { Provider as StyletronProvider } from 'styletron-react'
 import { appContext } from '../../../common/src/context'
 import { getApolloClient } from '../graphql/apolloClient'
 import { FetchUserContext } from '../graphql/query.gen'
+import { MainStyle } from '../style/Main'
 import { fetchUser } from './auth/fetchUser'
 import { UserContext, UserCtx } from './auth/user'
 import { Route } from './nav/route'
@@ -13,7 +14,6 @@ import { EditProfilePage } from './page/EditProfilePage'
 import { ExplorePage } from './page/ExplorePage'
 import { LoginPage } from './page/LoginPage'
 import { MatchPage } from './page/MatchPage'
-import { NewPage } from './page/NewPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
 
 const Styletron = require('styletron-engine-monolithic')
@@ -49,19 +49,18 @@ export function App() {
 
 export function AppBody() {
   return (
-    <>
-      <Router className={bodyClass}>
+    <div style={MainStyle}>
+      <Router className={bodyClass} style={{ padding: '75px' }}>
         <Redirect noThrow from="app" to="login" />
         <Redirect noThrow from="app/playground" to="surveys" />
         <EditProfilePage path={Route.EDIT} />
         <LoginPage path={Route.LOGIN} />
         <ExplorePage path={Route.EXPLORE} />
         <MatchPage path={Route.MATCH} />
-        <NewPage path={Route.NEW} />
         <PlaygroundPage path={Route.PLAYGROUND} />
         <PlaygroundPage path={Route.PLAYGROUND_APP} />
       </Router>
-    </>
+    </div>
   )
 }
 

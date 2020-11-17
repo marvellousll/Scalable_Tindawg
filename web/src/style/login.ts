@@ -1,9 +1,12 @@
 import CSS from 'csstype'
 
-export const loginStyle: CSS.Properties = {
-  width: '100%',
-  height: '100%',
-  backgroundImage: 'url(https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg)',
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center',
+export const LoginStyle: CSS.Properties = {
+  position: 'fixed',
+  right: '0',
+  left: '0',
+  margin: 'auto',
+  height: '300px',
+  marginTop: '150px',
+  width: '30%',
+  backgroundColor: 'white',
 }

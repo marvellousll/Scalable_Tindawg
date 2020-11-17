@@ -28,10 +28,6 @@ const otherTabs = [
     path: getPath(Route.MATCH),
   },
   {
-    name: 'profile',
-    path: getPath(Route.NEW),
-  },
-  {
     name: 'edit',
     path: getPath(Route.EDIT),
   },

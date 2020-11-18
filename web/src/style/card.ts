@@ -5,7 +5,6 @@ export const viewportStyle: CSS.Properties = {
   margin: 'auto',
   height: '500px',
   background: '#fff',
-  marginTop: '100px',
 }
 
 export const cardStyle: CSS.Properties = {

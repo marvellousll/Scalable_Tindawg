@@ -1,16 +1,19 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import Cards from '../card/Card'
+import { NavBar } from '../nav/NavBar'
 import { AppRouteParams } from '../nav/route'
-import { Page } from './Page'
 
 interface ExplorePageProps extends RouteComponentProps, AppRouteParams {}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ExplorePage(props: ExplorePageProps) {
   return (
-    <Page>
-      <Cards />
-    </Page>
+    <div className="mw8">
+      <NavBar />
+      <div style={{ margin: '10px' }}>
+        <Cards />
+      </div>
+    </div>
   )
 }

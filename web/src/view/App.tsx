@@ -14,7 +14,6 @@ import { EditProfilePage } from './page/EditProfilePage'
 import { ExplorePage } from './page/ExplorePage'
 import { LoginPage } from './page/LoginPage'
 import { MatchPage } from './page/MatchPage'
-import { PlaygroundPage } from './page/PlaygroundPage'
 
 const Styletron = require('styletron-engine-monolithic')
 
@@ -57,8 +56,6 @@ export function AppBody() {
         <LoginPage path={Route.LOGIN} />
         <ExplorePage path={Route.EXPLORE} />
         <MatchPage path={Route.MATCH} />
-        <PlaygroundPage path={Route.PLAYGROUND} />
-        <PlaygroundPage path={Route.PLAYGROUND_APP} />
       </Router>
     </div>
   )

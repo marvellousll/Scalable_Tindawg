@@ -9,6 +9,7 @@ import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { SwipeLeft } from '../entities/SwipeLeft'
 import { SwipeRight } from '../entities/SwipeRight'
 import { User } from '../entities/User'
+import { UserInfo } from '../entities/UserInfo'
 import { Resolvers } from './schema.types'
 
 export const pubsub = new PubSub()
@@ -33,7 +34,13 @@ export const graphqlRoot: Resolvers<Context> = {
     getPotentialMatches: async (_, { location }, ctx) =>
       (await User.createQueryBuilder('user')
         .where('user.id != :id', { id: 1 })
-        .andWhere('user.location = :location', { location: location })
+        .andWhere(() => {
+          const query = UserInfo.createQueryBuilder('userinfo')
+            .select('userinfo.userId')
+            .where('userinfo.location = :location', { location: location })
+            .getQuery()
+          return 'user.id IN (' + query + ')'
+        })
         .andWhere(() => {
           const query = SwipeLeft.createQueryBuilder('swiped')
             .select('swiped.swipedLeftOnId')
@@ -55,6 +62,7 @@ export const graphqlRoot: Resolvers<Context> = {
         })
         .setParameter('id', 1)
         .getMany()) || null,
+    getUserInfoById: async (_, { userId }) => (await UserInfo.findOne({ where: { userId: userId } })) || null,
   },
   Mutation: {
     answerSurvey: async (_, { input }, ctx) => {
@@ -81,10 +89,10 @@ export const graphqlRoot: Resolvers<Context> = {
     },
     // TODO: replace id to ctx.user.id
     changeUserInfo: async (_, { input }, ctx) => {
-      const user = check(await User.findOne({ where: { id: 1 } }))
-      Object.assign(user, input)
-      await user.save()
-      return user
+      const userInfo = check(await UserInfo.findOne({ where: { userId: 1 } }))
+      Object.assign(userInfo, input)
+      await userInfo.save()
+      return true
     },
     // TODO: replace userid to ctx.user.id
     swipeLeft: async (_, { userId }, ctx) => {

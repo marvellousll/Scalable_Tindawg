@@ -61,7 +61,7 @@ server.express.post(
     // create User model with data from HTTP request
     let user = new User()
     user.email = req.body.email
-    user.name = req.body.name
+    user.password = req.body.password
     user.userType = UserType.User
 
     // save the User model to the database, refresh `user` to get ID
@@ -83,11 +83,12 @@ server.express.post(
     const password = req.body.password
 
     const user = await User.findOne({ where: { email } })
-    if (!user || password !== Config.adminPassword) {
+    if (!user || password !== user.password) {
       res.status(403).send('Forbidden')
       return
     }
 
+    console.log('success')
     const authToken = await createSession(user)
     res
       .status(200)

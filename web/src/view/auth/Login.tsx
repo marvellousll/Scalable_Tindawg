@@ -33,7 +33,7 @@ export function Login() {
         check(res.ok, 'response status ' + res.status)
         return res.text()
       })
-      .then(() => window.location.reload())
+      .then(() => (window.location.href = 'edit'))
       .catch(err => {
         toastErr(err.toString())
         setError({ email: true, password: true })
@@ -55,7 +55,7 @@ export function Login() {
         check(res.ok, 'response status ' + res.status)
         return res.text()
       })
-      .then(() => (window.location.href = 'app/profile.com'))
+      .then(() => (window.location.href = 'edit'))
       .catch(err => {
         toastErr(err.toString())
         setError({ email: true, password: true })

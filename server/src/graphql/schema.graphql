@@ -22,6 +22,7 @@ type Query {
   getUserById (userId: Int!) : User
   getPotentialMatches (location: String!) : [User]
   getMatches: [User]
+  getUserInfoById (userId: Int!) : UserInfo
 }
 
 type Mutation {
@@ -30,7 +31,7 @@ type Mutation {
 
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
   nextSurveyQuestion (surveyId: Int!): Survey
-  changeUserInfo (input: UserInput!) : User
+  changeUserInfo (input: UserInput!) : Boolean!
   swipeLeft(userId: Int!): Boolean!
   swipeRight(userId: Int!): Boolean!
 }
@@ -43,14 +44,7 @@ type User {
   id: Int!
   userType: UserType!
   email: String!
-  name: String!
-  location: String!
-  dogName: String!
-  dogAge: Int
-  dogBreed: String
-  dogIsMale: Boolean
-  bio: String
-  imageURL: String!
+  password: String!
 }
 
 enum UserType { ADMIN, USER }
@@ -102,13 +96,25 @@ input SurveyInput {
 }
 
 input UserInput {
-  email: String
-  name: String
-  location: String
-  dogName: String
-  dogAge: Int
-  dogBreed: String
-  dogIsMale: Boolean
+  dogName: String!
+  dogAge: Int!
+  dogBreed: String!
   bio: String
+  contact: String
+  facebook: String
+  linkedin: String
+  location: String
+  imageURL: String
+}
+
+type UserInfo {
+  dogName: String!
+  dogAge: Int!
+  dogBreed: String!
+  bio: String
+  contact: String
+  facebook: String
+  linkedin: String
+  location: String
   imageURL: String
 }

@@ -8,6 +8,7 @@ import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { SwipeLeft } from '../entities/SwipeLeft'
 import { SwipeRight } from '../entities/SwipeRight'
 import { User } from '../entities/User'
+import { UserInfo } from '../entities/UserInfo'
 
 const baseConfig = {
   host: process.env.MYSQL_HOST || '127.0.0.1',
@@ -23,7 +24,7 @@ export async function initORM() {
     username: process.env.MYSQL_USER || 'root',
     synchronize: true,
     logging: false,
-    entities: [User, Session, Survey, SurveyQuestion, SurveyAnswer, Matching, SwipeRight, SwipeLeft],
+    entities: [User, Session, Survey, SurveyQuestion, SurveyAnswer, Matching, SwipeRight, SwipeLeft, UserInfo],
     extra: {
       connectionLimit: 5,
     },

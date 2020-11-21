@@ -4,7 +4,7 @@ export const fetchUser = gql`
   query FetchUserContext {
     self {
       id
-      name
+      email
       userType
     }
   }

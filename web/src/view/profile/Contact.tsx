@@ -41,6 +41,16 @@ export function Contact() {
             }}
           />
         </Grid>
+        <Grid item xs={12}>
+          <TextField
+            label="Location"
+            placeholder="Your Current Location"
+            fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </Grid>
       </Grid>
     </React.Fragment>
   )

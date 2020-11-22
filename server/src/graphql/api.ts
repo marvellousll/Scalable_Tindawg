@@ -28,7 +28,10 @@ interface Context {
 
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
-    self: (_, args, ctx) => ctx.user,
+    self: (_, args, ctx) => {
+      console.log(ctx)
+      return ctx.user
+    },
     getUserById: async (_, { userId }) => (await User.findOne({ where: { id: userId } })) || null,
     // TODO: replace id to ctx.user.id
     getPotentialMatches: async (_, { location }, ctx) =>
@@ -50,7 +53,7 @@ export const graphqlRoot: Resolvers<Context> = {
         })
         .limit(10)
         .getMany()) || null,
-    // TODO: replace id to ctx.user.id
+    //TODO: replace id to ctx.user.id
     getMatches: async (_, args, ctx) =>
       (await User.createQueryBuilder('user')
         .where(() => {

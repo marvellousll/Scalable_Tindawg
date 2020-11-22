@@ -6,7 +6,7 @@ import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import { NavBar } from '../nav/NavBar'
 import { AppRouteParams } from '../nav/route'
-import { ProfileView } from './ProfileView'
+import { ProfileView } from '../profileView/ProfileView'
 
 interface ExplorePageProps extends RouteComponentProps, AppRouteParams {}
 

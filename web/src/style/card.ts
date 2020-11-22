@@ -4,7 +4,8 @@ export const viewportStyle: CSS.Properties = {
   width: '300px',
   margin: 'auto',
   height: '500px',
-  background: '#fff',
+  marginTop: '100px',
+  background: 'none',
 }
 
 export const cardStyle: CSS.Properties = {
@@ -12,9 +13,9 @@ export const cardStyle: CSS.Properties = {
   height: '400px',
   background: '#555',
   listStyle: 'none',
-  borderRadius: '5px',
+  borderRadius: '10px',
   position: 'absolute',
-  boxShadow: '0 0 2px rgba(0,0,0,.2)',
+  boxShadow: '0 0 4px rgba(0,0,0,.2)',
   textAlign: 'center',
   fontSize: '10px',
   boxSizing: 'border-box',
@@ -29,8 +30,13 @@ export const tagStyle: CSS.Properties = {
   fontSize: '20px',
 }
 
-export const buttonsStyle: CSS.Properties = {
+export const buttonListStyle: CSS.Properties = {
   position: 'absolute',
   marginTop: '420px',
   marginLeft: '70px',
+}
+
+export const buttonStyle: CSS.Properties = {
+  backgroundColor: '#fff',
+  boxShadow: '0 0 4px rgba(0,0,0,.3)',
 }

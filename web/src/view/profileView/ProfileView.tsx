@@ -23,7 +23,8 @@ const useStyles = makeStyles({
   },
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '125%', // 16:9
+    boxShadow: '0 2px 4px rgba(0,0,0,.2)',
   },
 })
 //interface ProfileViewProps extends RouteComponentProps, AppRouteParams {}
@@ -37,7 +38,10 @@ export function ProfileView(props: { onClose: any; open: any }) {
   return (
     <Dialog open={open} onClose={handleClose}>
       <Card className={classes.root}>
-        <CardMedia className={classes.media} image="https://cdn.orvis.com/images/DBS_GoldRetriever_1280.jpg" />
+        <CardMedia
+          className={classes.media}
+          image="https://i.insider.com/5df126b679d7570ad2044f3e?width=1100&format=jpeg&auto=webp"
+        />
         <CardContent>
           <Typography className={classes.title} color="textSecondary" gutterBottom>
             Los Angeles, CA
@@ -49,8 +53,8 @@ export function ProfileView(props: { onClose: any; open: any }) {
             Gender: Male <br />
             Age: 4<br />
             Breed: Golden Retriever <br />
-            Owner Name：Nick <br />
-            Owner Email: Nickhasacutepuppy@puppy.com
+            Owner：Nick <br />
+            Email: Nickhasacutepuppy@puppy.com
           </Typography>
           <Typography variant="body2" component="p">
             He loves eating chicken and playing with other dogs.

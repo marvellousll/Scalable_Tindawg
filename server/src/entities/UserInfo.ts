@@ -26,6 +26,12 @@ export class UserInfo extends BaseEntity {
 
   @Column({
     length: 100,
+    default: 'Los Angeles',
+  })
+  location: string
+
+  @Column({
+    length: 100,
     nullable: true,
   })
   bio: string
@@ -35,13 +41,6 @@ export class UserInfo extends BaseEntity {
     nullable: true,
   })
   contact: string
-
-  @Column({
-    length: 100,
-    nullable: true,
-    default: 'Los Angeles',
-  })
-  location: string
 
   @Column({
     length: 100,

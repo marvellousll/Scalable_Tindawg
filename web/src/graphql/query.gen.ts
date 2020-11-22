@@ -23,6 +23,30 @@ export interface FetchUserContext {
 // @generated
 // This file was automatically generated and should not be edited.
 
+// ====================================================
+// GraphQL query operation: GetPotentialMatches
+// ====================================================
+
+export interface GetPotentialMatches_getPotentialMatches {
+  __typename: "User";
+  id: number;
+  email: string;
+  userType: UserType;
+}
+
+export interface GetPotentialMatches {
+  getPotentialMatches: (GetPotentialMatches_getPotentialMatches | null)[] | null;
+}
+
+export interface GetPotentialMatchesVariables {
+  location: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
 //==============================================================
 // START Enums and Input Objects
 //==============================================================

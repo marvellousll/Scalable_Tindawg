@@ -122,28 +122,28 @@ export interface SurveyInput {
 }
 
 export interface UserInput {
-  dogName: Scalars['String']
-  dogAge: Scalars['Int']
-  dogBreed: Scalars['String']
+  dogName?: Maybe<Scalars['String']>
+  dogAge?: Maybe<Scalars['Int']>
+  dogBreed?: Maybe<Scalars['String']>
   bio?: Maybe<Scalars['String']>
   contact?: Maybe<Scalars['String']>
   facebook?: Maybe<Scalars['String']>
   linkedin?: Maybe<Scalars['String']>
   location?: Maybe<Scalars['String']>
-  imageURL?: Maybe<Scalars['String']>
+  image?: Maybe<Scalars['String']>
 }
 
 export interface UserInfo {
   __typename?: 'UserInfo'
-  dogName: Scalars['String']
-  dogAge: Scalars['Int']
-  dogBreed: Scalars['String']
+  dogName?: Maybe<Scalars['String']>
+  dogAge?: Maybe<Scalars['Int']>
+  dogBreed?: Maybe<Scalars['String']>
   bio?: Maybe<Scalars['String']>
   contact?: Maybe<Scalars['String']>
   facebook?: Maybe<Scalars['String']>
   linkedin?: Maybe<Scalars['String']>
   location?: Maybe<Scalars['String']>
-  imageURL?: Maybe<Scalars['String']>
+  image?: Maybe<Scalars['String']>
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -388,15 +388,15 @@ export type UserInfoResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['UserInfo'] = ResolversParentTypes['UserInfo']
 > = {
-  dogName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  dogAge?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  dogBreed?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  dogName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  dogAge?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  dogBreed?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   contact?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   facebook?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   linkedin?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   location?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  imageURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

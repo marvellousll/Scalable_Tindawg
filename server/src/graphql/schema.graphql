@@ -96,25 +96,25 @@ input SurveyInput {
 }
 
 input UserInput {
-  dogName: String!
-  dogAge: Int!
-  dogBreed: String!
+  dogName: String
+  dogAge: Int
+  dogBreed: String
   bio: String
   contact: String
   facebook: String
   linkedin: String
   location: String
-  imageURL: String
+  image: String
 }
 
 type UserInfo {
-  dogName: String!
-  dogAge: Int!
-  dogBreed: String!
+  dogName: String
+  dogAge: Int
+  dogBreed: String
   bio: String
   contact: String
   facebook: String
   linkedin: String
   location: String
-  imageURL: String
+  image: String
 }

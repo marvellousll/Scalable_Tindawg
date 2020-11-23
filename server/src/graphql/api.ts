@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs'
 import { PubSub } from 'graphql-yoga'
 import path from 'path'
+import { getRepository } from 'typeorm'
 import { check } from '../../../common/src/util'
 import { Matching } from '../entities/Matching'
 import { Survey } from '../entities/Survey'
@@ -20,7 +21,7 @@ export function getSchema() {
 }
 
 interface Context {
-  user: User | null
+  user: User
   request: Request
   response: Response
   pubsub: PubSub
@@ -33,7 +34,7 @@ export const graphqlRoot: Resolvers<Context> = {
     // TODO: replace id to ctx.user.id
     getPotentialMatches: async (_, { location }, ctx) =>
       (await User.createQueryBuilder('user')
-        .where('user.id != :id', { id: 1 })
+        .where('user.id != :id', { id: ctx.user.id })
         .andWhere(() => {
           const query = UserInfo.createQueryBuilder('userinfo')
             .select('userinfo.userId')
@@ -44,7 +45,7 @@ export const graphqlRoot: Resolvers<Context> = {
         .andWhere(() => {
           const query = SwipeLeft.createQueryBuilder('swiped')
             .select('swiped.swipedLeftOnId')
-            .where('swiped.swipedLeftById = :id', { id: 1 })
+            .where('swiped.swipedLeftById = :id', { id: ctx.user.id })
             .getQuery()
           return 'user.id NOT IN (' + query + ')'
         })
@@ -60,9 +61,14 @@ export const graphqlRoot: Resolvers<Context> = {
             .getQuery()
           return 'user.id IN (' + query + ')'
         })
-        .setParameter('id', 1)
+        .setParameter('id', ctx.user.id)
         .getMany()) || null,
-    getUserInfoById: async (_, { userId }) => (await UserInfo.findOne({ where: { userId: userId } })) || null,
+    getUserInfoById: async (_, { userId }) =>
+      (await getRepository(UserInfo)
+        .createQueryBuilder('info')
+        .leftJoinAndSelect('info.user', 'user')
+        .where('user.id = :id', { id: userId })
+        .getOne()) || null,
   },
   Mutation: {
     answerSurvey: async (_, { input }, ctx) => {
@@ -87,21 +93,26 @@ export const graphqlRoot: Resolvers<Context> = {
       ctx.pubsub.publish('SURVEY_UPDATE_' + surveyId, survey)
       return survey
     },
-    // TODO: replace id to ctx.user.id
     changeUserInfo: async (_, { input }, ctx) => {
-      const userInfo = check(await UserInfo.findOne({ where: { userId: 1 } }))
-      Object.assign(userInfo, input)
-      await userInfo.save()
+      const userInfo = await UserInfo.findOne({ where: { userId: ctx.user.id } })
+      if (!userInfo) {
+        const userInfo = new UserInfo()
+        userInfo.userId = ctx.user.id
+        Object.assign(userInfo, input)
+        await userInfo.save()
+      } else {
+        Object.assign(userInfo, input)
+        await userInfo.save()
+      }
       return true
     },
-    // TODO: replace userid to ctx.user.id
     swipeLeft: async (_, { userId }, ctx) => {
       const swipe = new SwipeLeft()
       //TODO: generate a new, distinct id
       swipe.id = 99 + userId
 
       swipe.swipedLeftBy = new User()
-      swipe.swipedLeftBy.id = 1
+      swipe.swipedLeftBy.id = ctx.user.id
       swipe.swipedLeftOn = new User()
       swipe.swipedLeftOn.id = userId
 
@@ -113,14 +124,14 @@ export const graphqlRoot: Resolvers<Context> = {
       //TODO: generate a new, distinct id
       swipe.id = 99 + userId
       swipe.swipedRightBy = new User()
-      swipe.swipedRightBy.id = 1
+      swipe.swipedRightBy.id = ctx.user.id
       swipe.swipedRightOn = new User()
       swipe.swipedRightOn.id = userId
       await swipe.save()
 
       if (
         await SwipeRight.createQueryBuilder('swipe')
-          .where('swipe.swipedRightOnId = :id', { id: 1 })
+          .where('swipe.swipedRightOnId = :id', { id: ctx.user.id })
           .andWhere('swipe.swipedRightById = :id2', { id2: userId })
           .getOne()
       ) {

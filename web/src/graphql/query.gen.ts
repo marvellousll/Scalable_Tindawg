@@ -74,6 +74,28 @@ export interface getContactByIdVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: getImageById
+// ====================================================
+
+export interface getImageById_getUserInfoById {
+  __typename: "UserInfo";
+  image: string | null;
+}
+
+export interface getImageById {
+  getUserInfoById: getImageById_getUserInfoById | null;
+}
+
+export interface getImageByIdVariables {
+  userId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: ChangeInfo
 // ====================================================
 

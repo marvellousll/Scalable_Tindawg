@@ -18,8 +18,8 @@ export interface Query {
   surveys: Array<Survey>
   survey?: Maybe<Survey>
   getUserById?: Maybe<User>
-  getPotentialMatches?: Maybe<Array<Maybe<User>>>
-  getMatches?: Maybe<Array<Maybe<User>>>
+  getPotentialMatches?: Maybe<Array<Maybe<UserInfo>>>
+  getMatches?: Maybe<Array<Maybe<UserInfo>>>
   getUserInfoById?: Maybe<UserInfo>
 }
 
@@ -29,10 +29,6 @@ export interface QuerySurveyArgs {
 
 export interface QueryGetUserByIdArgs {
   userId: Scalars['Int']
-}
-
-export interface QueryGetPotentialMatchesArgs {
-  location: Scalars['String']
 }
 
 export interface QueryGetUserInfoByIdArgs {
@@ -135,14 +131,15 @@ export interface UserInput {
 
 export interface UserInfo {
   __typename?: 'UserInfo'
+  user: User
   dogName: Scalars['String']
   dogAge: Scalars['Int']
   dogBreed: Scalars['String']
+  location: Scalars['String']
   bio?: Maybe<Scalars['String']>
   contact?: Maybe<Scalars['String']>
   facebook?: Maybe<Scalars['String']>
   linkedin?: Maybe<Scalars['String']>
-  location?: Maybe<Scalars['String']>
   imageURL?: Maybe<Scalars['String']>
 }
 
@@ -225,11 +222,11 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>
   Int: ResolverTypeWrapper<Scalars['Int']>
-  String: ResolverTypeWrapper<Scalars['String']>
   Mutation: ResolverTypeWrapper<{}>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
   Subscription: ResolverTypeWrapper<{}>
   User: ResolverTypeWrapper<User>
+  String: ResolverTypeWrapper<Scalars['String']>
   UserType: UserType
   Survey: ResolverTypeWrapper<Survey>
   SurveyQuestion: ResolverTypeWrapper<SurveyQuestion>
@@ -243,11 +240,11 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Query: {}
   Int: Scalars['Int']
-  String: Scalars['String']
   Mutation: {}
   Boolean: Scalars['Boolean']
   Subscription: {}
   User: User
+  String: Scalars['String']
   Survey: Survey
   SurveyQuestion: SurveyQuestion
   SurveyAnswer: SurveyAnswer
@@ -274,13 +271,8 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetUserByIdArgs, 'userId'>
   >
-  getPotentialMatches?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['User']>>>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryGetPotentialMatchesArgs, 'location'>
-  >
-  getMatches?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>
+  getPotentialMatches?: Resolver<Maybe<Array<Maybe<ResolversTypes['UserInfo']>>>, ParentType, ContextType>
+  getMatches?: Resolver<Maybe<Array<Maybe<ResolversTypes['UserInfo']>>>, ParentType, ContextType>
   getUserInfoById?: Resolver<
     Maybe<ResolversTypes['UserInfo']>,
     ParentType,
@@ -388,14 +380,15 @@ export type UserInfoResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['UserInfo'] = ResolversParentTypes['UserInfo']
 > = {
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
   dogName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   dogAge?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   dogBreed?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  location?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   contact?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   facebook?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   linkedin?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  location?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   imageURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }

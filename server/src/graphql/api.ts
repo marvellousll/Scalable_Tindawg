@@ -10,7 +10,7 @@ import { SwipeLeft } from '../entities/SwipeLeft'
 import { SwipeRight } from '../entities/SwipeRight'
 import { User } from '../entities/User'
 import { UserInfo } from '../entities/UserInfo'
-import { Resolvers } from './schema.types'
+import { Resolvers, UserType } from './schema.types'
 
 export const pubsub = new PubSub()
 
@@ -29,43 +29,52 @@ interface Context {
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => {
-      console.log(ctx)
       return ctx.user
     },
     getUserById: async (_, { userId }) => (await User.findOne({ where: { id: userId } })) || null,
-    // TODO: replace id to ctx.user.id
-    getPotentialMatches: async (_, { location }, ctx) =>
-      (await User.createQueryBuilder('user')
-        .where('user.id != :id', { id: 1 })
-        .andWhere(() => {
-          const query = UserInfo.createQueryBuilder('userinfo')
-            .select('userinfo.userId')
-            .where('userinfo.location = :location', { location: location })
-            .getQuery()
-          return 'user.id IN (' + query + ')'
-        })
-        .andWhere(() => {
-          const query = SwipeLeft.createQueryBuilder('swiped')
-            .select('swiped.swipedLeftOnId')
-            .where('swiped.swipedLeftById = :id', { id: 1 })
-            .getQuery()
-          return 'user.id NOT IN (' + query + ')'
-        })
-        .limit(10)
-        .getMany()) || null,
-    //TODO: replace id to ctx.user.id
-    getMatches: async (_, args, ctx) =>
-      (await User.createQueryBuilder('user')
-        .where(() => {
-          const query = Matching.createQueryBuilder('match')
-            .select('match.user2Id')
-            .where('match.user1Id = :id')
-            .getQuery()
-          return 'user.id IN (' + query + ')'
-        })
-        .setParameter('id', 1)
-        .getMany()) || null,
-    getUserInfoById: async (_, { userId }) => (await UserInfo.findOne({ where: { userId: userId } })) || null,
+    getPotentialMatches: async (_, args, ctx) => {
+      const userInfo = await UserInfo.createQueryBuilder('userInfo')
+        .where('userInfo.userId = :id', { id: ctx.user?.id })
+        .getOne()
+      const location = userInfo!.location
+
+      return (
+        (await UserInfo.createQueryBuilder('userInfo')
+          .where('userInfo.userId != :id', { id: ctx.user?.id })
+          .andWhere('userInfo.location = :loc', { loc: location })
+          .andWhere(() => {
+            const query1 = SwipeLeft.createQueryBuilder('swiped')
+              .select('swiped.swipedLeftOnId')
+              .where('swiped.swipedLeftById = :id', { id: ctx.user?.id })
+              .getQuery()
+            const query2 = SwipeRight.createQueryBuilder('swiped')
+              .select('swiped.swipedRightOnId')
+              .where('swiped.swipedRightById = :id', { id: ctx.user?.id })
+              .getQuery()
+            return 'userInfo.userId NOT IN (' + query1 + ' UNION ' + query2 + ')'
+          })
+          .innerJoinAndSelect('userInfo.user', 'user')
+          .limit(10)
+          .getMany()) || null
+      )
+    },
+    getMatches: async (_, args, ctx) => {
+      return (
+        (await UserInfo.createQueryBuilder('userInfo')
+          .where(() => {
+            const query = Matching.createQueryBuilder('match')
+              .select('match.user2Id')
+              .where('match.user1Id = :id')
+              .getQuery()
+            return 'userInfo.userId IN (' + query + ')'
+          })
+          .setParameter('id', ctx.user?.id)
+          .innerJoinAndSelect('userInfo.user', 'user')
+          .getMany()) || null
+      )
+    },
+    getUserInfoById: async (_, { userId }) =>
+      (await UserInfo.createQueryBuilder('userInfo').where('userInfo.userId = :id', { id: userId }).getOne()) || null,
   },
   Mutation: {
     answerSurvey: async (_, { input }, ctx) => {
@@ -83,28 +92,26 @@ export const graphqlRoot: Resolvers<Context> = {
       return true
     },
     nextSurveyQuestion: async (_, { surveyId }, ctx) => {
-      // check(ctx.user?.userType === UserType.Admin)
+      check(ctx.user?.userType === UserType.Admin)
       const survey = check(await Survey.findOne({ where: { id: surveyId } }))
       survey.currQuestion = survey.currQuestion == null ? 0 : survey.currQuestion + 1
       await survey.save()
       ctx.pubsub.publish('SURVEY_UPDATE_' + surveyId, survey)
       return survey
     },
-    // TODO: replace id to ctx.user.id
     changeUserInfo: async (_, { input }, ctx) => {
-      const userInfo = check(await UserInfo.findOne({ where: { userId: 1 } }))
+      const userInfo = check(
+        await UserInfo.createQueryBuilder('userInfo').where('userInfo.userId = :id', { id: ctx.user?.id }).getOne()
+      )
       Object.assign(userInfo, input)
+      userInfo.user = ctx.user!
       await userInfo.save()
       return true
     },
-    // TODO: replace userid to ctx.user.id
     swipeLeft: async (_, { userId }, ctx) => {
       const swipe = new SwipeLeft()
-      //TODO: generate a new, distinct id
-      swipe.id = 99 + userId
-
       swipe.swipedLeftBy = new User()
-      swipe.swipedLeftBy.id = 1
+      swipe.swipedLeftBy.id = ctx.user!.id
       swipe.swipedLeftOn = new User()
       swipe.swipedLeftOn.id = userId
 
@@ -113,36 +120,30 @@ export const graphqlRoot: Resolvers<Context> = {
     },
     swipeRight: async (_, { userId }, ctx) => {
       const swipe = new SwipeRight()
-      //TODO: generate a new, distinct id
-      swipe.id = 99 + userId
       swipe.swipedRightBy = new User()
-      swipe.swipedRightBy.id = 1
+      swipe.swipedRightBy.id = ctx.user!.id
       swipe.swipedRightOn = new User()
       swipe.swipedRightOn.id = userId
       await swipe.save()
 
       if (
         await SwipeRight.createQueryBuilder('swipe')
-          .where('swipe.swipedRightOnId = :id', { id: 1 })
+          .where('swipe.swipedRightOnId = :id', { id: ctx.user?.id })
           .andWhere('swipe.swipedRightById = :id2', { id2: userId })
           .getOne()
       ) {
         const match = new Matching()
-        //TODO: generate a new, distinct id
-        match.id = 99 + userId
         match.user1 = new User()
-        match.user1.id = 1
+        match.user1.id = ctx.user!.id
         match.user2 = new User()
         match.user2.id = userId
         await match.save()
 
         const revMatch = new Matching()
-        //TODO: generate a new, distinct id
-        revMatch.id = 999 + userId
         revMatch.user1 = new User()
         revMatch.user1.id = userId
         revMatch.user2 = new User()
-        revMatch.user2.id = 1
+        revMatch.user2.id = ctx.user!.id
         await revMatch.save()
       }
 

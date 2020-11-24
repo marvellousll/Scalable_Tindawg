@@ -240,13 +240,11 @@ server.express.post(
   '/graphql',
   asyncRoute(async (req, res, next) => {
     const authToken = req.cookies.authToken || req.header('x-authtoken')
-    console.log(authToken)
     if (authToken) {
       const session = await Session.findOne({ where: { authToken }, relations: ['user'] })
       if (session) {
         const reqAny = req as any
         reqAny.user = session.user
-        console.log(reqAny.user)
       }
     }
     next()

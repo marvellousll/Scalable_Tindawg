@@ -51,7 +51,6 @@ export function AppBody() {
     <div style={MainStyle}>
       <Router className={bodyClass} style={{ padding: '75px' }}>
         <Redirect noThrow from="app" to="login" />
-        <Redirect noThrow from="app/playground" to="surveys" />
         <EditProfilePage path={Route.EDIT} />
         <LoginPage path={Route.LOGIN} />
         <ExplorePage path={Route.EXPLORE} />

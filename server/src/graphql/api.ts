@@ -20,7 +20,7 @@ export function getSchema() {
 }
 
 interface Context {
-  user: User | null
+  user: User
   request: Request
   response: Response
   pubsub: PubSub

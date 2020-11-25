@@ -5,22 +5,33 @@ export class UserInfo extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
+  @Column({
+    default: 0,
+    nullable: false,
+  })
+  userId: number
+
   @OneToOne(type => User, { eager: true })
-  @JoinColumn()
+  @JoinColumn({
+    name: 'userId',
+  })
   user: User
 
   @Column({
     length: 100,
+    nullable: true,
   })
   dogName: string
 
   @Column({
     default: 0,
+    nullable: true,
   })
   dogAge: number
 
   @Column({
     length: 100,
+    nullable: true,
   })
   dogBreed: string
 
@@ -56,7 +67,7 @@ export class UserInfo extends BaseEntity {
 
   @Column({
     length: 100,
-    nullable: false,
+    nullable: true,
   })
-  imageURL: string
+  image: string
 }

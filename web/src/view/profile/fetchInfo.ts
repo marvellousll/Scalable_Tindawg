@@ -25,7 +25,7 @@ export const fetchContact = gql`
 export const fetchImage = gql`
   query getImageById($userId: Int!) {
     getUserInfoById(userId: $userId) {
-      image
+      imageURL
     }
   }
 `

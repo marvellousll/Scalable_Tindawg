@@ -5,11 +5,11 @@ export class UserInfo extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({
-    default: 0,
-    nullable: false,
-  })
-  userId: number
+  // @Column({
+  //   default: 0,
+  //   nullable: false,
+  // })
+  // userId: number
 
   @OneToOne(type => User, { eager: true })
   @JoinColumn({
@@ -37,6 +37,12 @@ export class UserInfo extends BaseEntity {
 
   @Column({
     length: 100,
+    default: 'Los Angeles',
+  })
+  location: string
+
+  @Column({
+    length: 100,
     nullable: true,
   })
   bio: string
@@ -46,13 +52,6 @@ export class UserInfo extends BaseEntity {
     nullable: true,
   })
   contact: string
-
-  @Column({
-    length: 100,
-    nullable: true,
-    default: 'Los Angeles',
-  })
-  location: string
 
   @Column({
     length: 100,
@@ -70,5 +69,5 @@ export class UserInfo extends BaseEntity {
     length: 100,
     nullable: true,
   })
-  image: string
+  imageURL: string
 }

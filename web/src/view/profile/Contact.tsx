@@ -68,7 +68,7 @@ export function Contact() {
         0,
         async uri => {
           await mutateInfo({
-            image: String(uri),
+            imageURL: String(uri),
           })
         },
         'base64',

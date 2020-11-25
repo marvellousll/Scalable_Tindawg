@@ -1,12 +1,15 @@
+import { useQuery } from '@apollo/client'
 import { GridListTileBar } from '@material-ui/core'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
 import { makeStyles } from '@material-ui/core/styles'
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
+import { getMatches } from '../../graphql/getMatches'
+import { GetMatches } from '../../graphql/query.gen'
 import { NavBar } from '../nav/NavBar'
 import { AppRouteParams } from '../nav/route'
-import { ProfileView } from './ProfileView'
+import { ProfileView } from '../profileView/ProfileView'
 
 interface ExplorePageProps extends RouteComponentProps, AppRouteParams {}
 
@@ -27,57 +30,16 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const tileData = [
-  {
-    img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
-    name: 'Pumpkin',
-    age: '3',
-  },
-  {
-    img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
-    name: 'Pumpkin',
-    age: '3',
-  },
-  {
-    img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
-    name: 'Pumpkin',
-    age: '3',
-  },
-  {
-    img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
-    name: 'Pumpkin',
-    age: '3',
-  },
-  {
-    img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
-    name: 'Pumpkin',
-    age: '3',
-  },
-  {
-    img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
-    name: 'Pumpkin',
-    age: '3',
-  },
-  {
-    img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
-    name: 'Pumpkin',
-    age: '3',
-  },
-  {
-    img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
-    name: 'Pumpkin',
-    age: '3',
-  },
-  {
-    img: 'https://www.rockymtnresorts.com/wp-content/uploads/2018/12/dog-friendly01.jpg',
-    name: 'Pumpkin',
-    age: '3',
-  },
-]
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function MatchPage(props: ExplorePageProps) {
+  const { loading, data } = useQuery<GetMatches>(getMatches)
+  if (loading || data == null || data.getMatches == null) {
+    return null
+  }
+
+  const matches = data.getMatches!
   const [open, setOpen] = React.useState(false)
+
   const handleClickOpen = () => {
     setOpen(true)
   }
@@ -93,15 +55,17 @@ export function MatchPage(props: ExplorePageProps) {
       <div className={classes.root} style={{ marginTop: '50px' }}>
         <div style={{ margin: '10px' }}>
           <GridList cellHeight={180} className={classes.gridList}>
-            {tileData.map(tile => (
-              <GridListTile key={tile.img}>
-                <img src={tile.img} onClick={handleClickOpen} />
-                <GridListTileBar title={tile.name} subtitle={<span>Age: {tile.age} </span>} />
-              </GridListTile>
+            {matches.map(match => (
+              <div key={match!.user!.id}>
+                <GridListTile onClick={handleClickOpen}>
+                  <img src={match!.imageURL!} />
+                  <GridListTileBar title={match!.dogName} subtitle={<span>Breed: {match!.dogBreed} </span>} />
+                </GridListTile>
+                <ProfileView open={open} onClose={handleClose} userInfo={match!} />
+              </div>
             ))}
           </GridList>
         </div>
-        <ProfileView open={open} onClose={handleClose} />
       </div>
     </div>
   )

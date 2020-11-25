@@ -20,8 +20,8 @@ type Query {
   surveys: [Survey!]!
   survey (surveyId: Int!): Survey
   getUserById (userId: Int!) : User
-  getPotentialMatches (location: String!) : [User]
-  getMatches: [User]
+  getPotentialMatches: [UserInfo]
+  getMatches: [UserInfo]
   getUserInfoById (userId: Int!) : UserInfo
 }
 
@@ -108,6 +108,7 @@ input UserInput {
 }
 
 type UserInfo {
+  user: User
   dogName: String
   dogAge: Int
   dogBreed: String
@@ -116,5 +117,5 @@ type UserInfo {
   facebook: String
   linkedin: String
   location: String
-  image: String
+  imageURL: String
 }

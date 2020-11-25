@@ -31,6 +31,7 @@ import { renderApp } from './render'
 const server = new GraphQLServer({
   typeDefs: getSchema(),
   resolvers: graphqlRoot as any,
+  // context: ctx => ({ ...ctx, pubsub, user: (ctx.request as any)?.user || null }),
   context: ctx => ({ ...ctx, pubsub, user: (ctx.request as any)?.user || null }),
 })
 

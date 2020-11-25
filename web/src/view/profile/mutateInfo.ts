@@ -10,7 +10,7 @@ export interface UserInput {
   facebook?: string
   linkedin?: string
   location?: string
-  image?: string
+  imageURL?: string
 }
 
 const infoMutation = gql`

@@ -108,6 +108,7 @@ input UserInput {
 }
 
 type UserInfo {
+  user: User
   dogName: String
   dogAge: Int
   dogBreed: String

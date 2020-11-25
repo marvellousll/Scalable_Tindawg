@@ -131,6 +131,7 @@ export interface UserInput {
 
 export interface UserInfo {
   __typename?: 'UserInfo'
+  user?: Maybe<User>
   dogName?: Maybe<Scalars['String']>
   dogAge?: Maybe<Scalars['Int']>
   dogBreed?: Maybe<Scalars['String']>
@@ -379,6 +380,7 @@ export type UserInfoResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['UserInfo'] = ResolversParentTypes['UserInfo']
 > = {
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   dogName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   dogAge?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   dogBreed?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>

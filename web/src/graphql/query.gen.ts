@@ -14,11 +14,11 @@ export interface GetMatches_getMatches_user {
 
 export interface GetMatches_getMatches {
   __typename: "UserInfo";
-  user: GetMatches_getMatches_user;
-  dogName: string;
-  dogAge: number;
-  dogBreed: string;
-  location: string;
+  user: GetMatches_getMatches_user | null;
+  dogName: string | null;
+  dogAge: number | null;
+  dogBreed: string | null;
+  location: string | null;
   bio: string | null;
   contact: string | null;
   facebook: string | null;
@@ -46,11 +46,11 @@ export interface GetPotential_getPotentialMatches_user {
 
 export interface GetPotential_getPotentialMatches {
   __typename: "UserInfo";
-  user: GetPotential_getPotentialMatches_user;
-  dogName: string;
-  dogAge: number;
-  dogBreed: string;
-  location: string;
+  user: GetPotential_getPotentialMatches_user | null;
+  dogName: string | null;
+  dogAge: number | null;
+  dogBreed: string | null;
+  location: string | null;
   bio: string | null;
   contact: string | null;
   facebook: string | null;
@@ -177,7 +177,7 @@ export interface getContactByIdVariables {
 
 export interface getImageById_getUserInfoById {
   __typename: "UserInfo";
-  image: string | null;
+  imageURL: string | null;
 }
 
 export interface getImageById {

@@ -100,12 +100,18 @@ export const graphqlRoot: Resolvers<Context> = {
       return survey
     },
     changeUserInfo: async (_, { input }, ctx) => {
-      const userInfo = check(
-        await UserInfo.createQueryBuilder('userInfo').where('userInfo.userId = :id', { id: ctx.user?.id }).getOne()
-      )
-      Object.assign(userInfo, input)
-      userInfo.user = ctx.user!
-      await userInfo.save()
+      const userInfo = await UserInfo.createQueryBuilder('userInfo')
+        .where('userInfo.userId = :id', { id: ctx.user.id })
+        .getOne()
+      if (!userInfo) {
+        const userInfo = new UserInfo()
+        userInfo.user = ctx.user
+        Object.assign(userInfo, input)
+        await userInfo.save()
+      } else {
+        Object.assign(userInfo, input)
+        await userInfo.save()
+      }
       return true
     },
     swipeLeft: async (_, { userId }, ctx) => {

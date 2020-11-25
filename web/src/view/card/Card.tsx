@@ -12,6 +12,7 @@ import { swipeRight } from '../../graphql/swipeRight'
 import { buttonListStyle, cardStyle, tagStyle, viewportStyle } from '../../style/card'
 import { ProfileView } from '../profileView/ProfileView'
 
+// test image: https://i.insider.com/5df126b679d7570ad2044f3e?width=1100&format=jpeg&auto=webp
 const alreadyRemoved: number[] = []
 
 function Cards() {
@@ -72,7 +73,7 @@ function Cards() {
     <div>
       <div style={viewportStyle}>
         {dogs.map((dog, index) => (
-          <div key={dog!.user.id} onDoubleClick={handleClickOpen}>
+          <div key={dog!.user!.id} onDoubleClick={handleClickOpen}>
             <TinderCard
               ref={childRefs[index]}
               onSwipe={dir => swiped(dir, dog!.user!.id)}
@@ -81,8 +82,7 @@ function Cards() {
               <div
                 style={{
                   ...cardStyle,
-                  backgroundImage:
-                    'url(https://i.insider.com/5df126b679d7570ad2044f3e?width=1100&format=jpeg&auto=webp)',
+                  backgroundImage: `url(${dog!.imageURL})`,
                   backgroundPosition: 'center',
                   backgroundSize: '200%',
                   backgroundRepeat: 'no-repeat',

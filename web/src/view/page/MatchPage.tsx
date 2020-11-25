@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function MatchPage(props: ExplorePageProps) {
   const { loading, data } = useQuery<GetMatches>(getMatches)
-  if (loading || data == null) {
+  if (loading || data == null || data.getMatches == null) {
     return null
   }
 

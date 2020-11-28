@@ -1,5 +1,5 @@
 import http from 'k6/http'
-// import { sleep } from 'k6'
+import { sleep } from 'k6'
 import { Counter, Rate } from 'k6/metrics'
 
 export const options = {

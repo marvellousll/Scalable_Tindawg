@@ -6,11 +6,21 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
+// import S3 from 'react-aws-s3'
 import Resizer from 'react-image-file-resizer'
 import { getContactById, getContactByIdVariables } from '../../graphql/query.gen'
 import { UserContext } from '../auth/user'
 import { fetchContact } from './fetchInfo'
 import { mutateInfo } from './mutateInfo'
+
+// const config = {
+//   bucketName: 'tf-bucket',
+//   region: process.env.AWS_REGION,
+//   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+// }
+
+// const ReactS3Client = new S3(config)
 
 const ColorButton = withStyles(theme => ({
   root: {
@@ -57,23 +67,34 @@ export function Contact() {
   const [_linkedin, setLinkedin] = React.useState(linkedin == null ? undefined : linkedin)
   const [_location, setLocation] = React.useState(location == null ? undefined : location)
 
+  // async function uploadImage(uri: string) {
+  //   const newFileName = 'dogImage-' + id
+  //   let fileLocation = ''
+  //   ReactS3Client.uploadFile(uri, newFileName).then((data: any) => {
+  //     fileLocation = data.location
+  //     console.log(data)
+  //   })
+
+  //   await mutateInfo({
+  //     imageURL: fileLocation,
+  //   })
+  // }
+
   async function fileChangedHandler(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files != null) {
       Resizer.imageFileResizer(
         event.target.files[0],
-        300,
-        300,
+        400,
+        500,
         'JPEG',
         100,
         0,
         async uri => {
-          await mutateInfo({
-            imageURL: String(uri),
-          })
+          // await uploadImage(String(uri))
         },
         'base64',
-        200,
-        200
+        400,
+        500
       )
     }
   }

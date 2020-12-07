@@ -6,34 +6,27 @@ export const options = {
   scenarios: {
     example_scenario: {
       // name of the executor to use
-      executor: 'ramping-vus',
+      executor: 'constant-vus',
 
-      // executor-specific configuration
-      startVUs: 0,
-
-      stages: [
-        { duration: '30s', target: 1000  },
-        { duration: '30s', target: 0,  },
-      ],
-      gracefulRampDown: '0s',
+      vus: 1000,
+      duration: '30s',
     },
   },
 }
 
 export default function () {
-  // recordRates(
-  const resp = http.post(
-    'http://localhost:3000/graphql',
-    '{"operationName":"GetPotential","variables":{},"query":"query GetPotential {\n  getPotentialMatches {\n    user {\n      id\n      __typename\n    }\n    dogName\n    dogAge\n    dogBreed\n    location\n    bio\n    contact\n    facebook\n    linkedin\n    imageURL\n    __typename\n  }\n}\n"}',
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  )
+  recordRates(http.get('http://localhost:3000/'))
+  //const resp = http.post(
+  //  'http://localhost:3000/graphql',
+  //  '{"operationName":"GetPotential","variables":{},"query":"query GetPotential {\n  getPotentialMatches {\n    user {\n      id\n      __typename\n    }\n    dogName\n    dogAge\n    dogBreed\n    location\n    bio\n    contact\n    facebook\n    linkedin\n    imageURL\n    __typename\n  }\n}\n"}',
+  //  {
+  //    headers: {
+  //      'Content-Type': 'application/json',
+  //    },
+  //  }
+  //)
   // )
   sleep(Math.random() * 3)
-  //http.get('http://localhost:3000')
 }
 
 const count200 = new Counter('status_code_2xx')

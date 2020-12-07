@@ -6,6 +6,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
+import { useEffect } from 'react'
 import { getUserInfoById, getUserInfoByIdVariables } from '../../graphql/query.gen'
 import { UserContext } from '../auth/user'
 import { fetchInfo } from './fetchInfo'
@@ -41,15 +42,24 @@ export function Information() {
 
   const classes = useStyles()
 
-  const name = data?.getUserInfoById?.dogName
-  const breed = data?.getUserInfoById?.dogBreed
-  const age = data?.getUserInfoById?.dogAge
-  const bio = data?.getUserInfoById?.bio
+  const [dogname, setDogname] = React.useState('')
+  const [dogbreed, setDogbreed] = React.useState('')
+  const [dogage, setDogage] = React.useState(Number)
+  const [dogbio, setDogbio] = React.useState('')
 
-  const [dogname, setDogname] = React.useState(name == null ? undefined : name)
-  const [dogbreed, setDogbreed] = React.useState(breed == null ? undefined : breed)
-  const [dogage, setDogage] = React.useState(age == null ? undefined : age)
-  const [dogbio, setDogbio] = React.useState(bio == null ? undefined : bio)
+  useEffect(() => {
+    if (data) {
+      const name = data.getUserInfoById!.dogName!
+      const breed = data.getUserInfoById!.dogBreed!
+      const age = data.getUserInfoById!.dogAge!
+      const bio = data.getUserInfoById!.bio!
+
+      setDogname(name)
+      setDogbreed(breed)
+      setDogage(age)
+      setDogbio(bio)
+    }
+  }, [data])
 
   async function handleChange() {
     await mutateInfo({
@@ -120,7 +130,7 @@ export function Information() {
             rows={4}
             variant="outlined"
             onChange={e => setDogbio(e.target.value)}
-            value={bio}
+            value={dogbio}
           />
         </Grid>
       </Grid>

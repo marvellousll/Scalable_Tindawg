@@ -6,6 +6,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
+import { useEffect } from 'react'
 import Resizer from 'react-image-file-resizer'
 import { getContactById, getContactByIdVariables } from '../../graphql/query.gen'
 import { UserContext } from '../auth/user'
@@ -44,18 +45,27 @@ const useStyles = makeStyles(theme => ({
 export function Contact() {
   const user = React.useContext(UserContext)
   const id = user.user?.id == null ? 0 : user.user?.id
-  const data = useQuery<getContactById, getContactByIdVariables>(fetchContact, { variables: { userId: id } })['data']
   const classes = useStyles()
 
-  const contact = data?.getUserInfoById?.contact
-  const facebook = data?.getUserInfoById?.facebook
-  const linkedin = data?.getUserInfoById?.linkedin
-  const location = data?.getUserInfoById?.location
+  const [_contact, setContact] = React.useState('')
+  const [_facebook, setFacebook] = React.useState('')
+  const [_linkedin, setLinkedin] = React.useState('')
+  const [_location, setLocation] = React.useState('')
+  const data = useQuery<getContactById, getContactByIdVariables>(fetchContact, { variables: { userId: id } })['data']
 
-  const [_contact, setContact] = React.useState(contact == null ? undefined : contact)
-  const [_facebook, setFacebook] = React.useState(facebook == null ? undefined : facebook)
-  const [_linkedin, setLinkedin] = React.useState(linkedin == null ? undefined : linkedin)
-  const [_location, setLocation] = React.useState(location == null ? undefined : location)
+  useEffect(() => {
+    if (data) {
+      const contact = data!.getUserInfoById!.contact!
+      const facebook = data!.getUserInfoById!.facebook!
+      const linkedin = data!.getUserInfoById!.linkedin!
+      const location = data!.getUserInfoById!.location!
+
+      setContact(contact)
+      setFacebook(facebook)
+      setLinkedin(linkedin)
+      setLocation(location)
+    }
+  }, [data])
 
   async function fileChangedHandler(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files != null) {

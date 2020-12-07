@@ -12,7 +12,6 @@ import * as React from 'react'
 import { AppRouteParams } from '../nav/route'
 import { Contact } from './Contact'
 import { Information } from './Information'
-// import Review from './Review';
 
 interface SignupProps extends RouteComponentProps, AppRouteParams {}
 

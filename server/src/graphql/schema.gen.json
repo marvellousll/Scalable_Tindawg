@@ -1273,7 +1273,7 @@
             "defaultValue": null
           },
           {
-            "name": "image",
+            "name": "imageURL",
             "description": null,
             "type": {
               "kind": "SCALAR",

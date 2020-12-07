@@ -70,7 +70,7 @@ export interface UserInput {
   facebook?: Maybe<Scalars['String']>
   linkedin?: Maybe<Scalars['String']>
   location?: Maybe<Scalars['String']>
-  image?: Maybe<Scalars['String']>
+  imageURL?: Maybe<Scalars['String']>
 }
 
 export interface UserInfo {

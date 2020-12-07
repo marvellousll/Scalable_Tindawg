@@ -44,10 +44,7 @@ export function ProfileView(props: {
   return (
     <Dialog open={open} onClose={handleClose}>
       <Card className={classes.root}>
-        <CardMedia
-          className={classes.media}
-          image="https://i.insider.com/5df126b679d7570ad2044f3e?width=1100&format=jpeg&auto=webp"
-        />
+        <CardMedia className={classes.media} image={userInfo!.imageURL!} />
         <CardContent>
           <Typography className={classes.title} color="textSecondary" gutterBottom>
             {location}
@@ -59,7 +56,7 @@ export function ProfileView(props: {
             Age: {dogAge}
             <br />
             Breed: {dogBreed} <br />
-            Email: {contact}
+            Contact: {contact}
           </Typography>
           <Typography variant="body2" component="p">
             {bio}

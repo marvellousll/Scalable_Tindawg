@@ -228,7 +228,7 @@ export interface UserInput {
   facebook?: string | null;
   linkedin?: string | null;
   location?: string | null;
-  image?: string | null;
+  imageURL?: string | null;
 }
 
 //==============================================================

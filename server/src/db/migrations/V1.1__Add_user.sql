@@ -1,1 +1,10 @@
 insert into `user` (`id`, `email`, `userType`, `password`) values ('1', 'test@test.com', 'USER', 'test');
+insert into `user` (`id`, `email`, `userType`, `password`) values ('2', 'jack@test.com', 'USER', 'test');
+insert into `user` (`id`, `email`, `userType`, `password`) values ('3', 'guy@test.com', 'USER', 'test');
+insert into `user` (`id`, `email`, `userType`, `password`) values ('4', 'dude@test.com', 'USER', 'test');
+insert into `user` (`id`, `email`, `userType`, `password`) values ('5', 'yuan@test.com', 'USER', 'test');
+insert into `user` (`id`, `email`, `userType`, `password`) values ('6', 'chenglai@test.com', 'USER', 'test');
+insert into `user` (`id`, `email`, `userType`, `password`) values ('7', 'joe@test.com', 'USER', 'test');
+insert into `user` (`id`, `email`, `userType`, `password`) values ('8', 'dude@test.com', 'USER', 'test');
+insert into `user` (`id`, `email`, `userType`, `password`) values ('9', 'mary@test.com', 'USER', 'test');
+insert into `user` (`id`, `email`, `userType`, `password`) values ('10', 'josephine@test.com', 'USER', 'test');

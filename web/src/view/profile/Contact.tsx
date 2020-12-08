@@ -53,7 +53,7 @@ export function Contact() {
   const data = useQuery<getContactById, getContactByIdVariables>(fetchContact, { variables: { userId: id } })['data']
 
   useEffect(() => {
-    if (data) {
+    if (data && data.getUserInfoById) {
       const contact = data!.getUserInfoById!.contact!
       const facebook = data!.getUserInfoById!.facebook!
       const linkedin = data!.getUserInfoById!.linkedin!

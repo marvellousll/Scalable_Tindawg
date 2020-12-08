@@ -48,7 +48,7 @@ export function Information() {
   const [dogbio, setDogbio] = React.useState('')
 
   useEffect(() => {
-    if (data) {
+    if (data && data.getUserInfoById) {
       const name = data.getUserInfoById!.dogName!
       const breed = data.getUserInfoById!.dogBreed!
       const age = data.getUserInfoById!.dogAge!

@@ -46,7 +46,7 @@ export function Image() {
   const data = useQuery<getImageById, getImageByIdVariables>(fetchImage, { variables: { userId: id } })['data']
 
   useEffect(() => {
-    if (data) {
+    if (data && data.getUserInfoById) {
       const image = data.getUserInfoById!.imageURL!
       setImage(image)
     }

@@ -11,6 +11,7 @@ import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import { AppRouteParams } from '../nav/route'
 import { Contact } from './Contact'
+import { Image } from './Image'
 import { Information } from './Information'
 
 interface SignupProps extends RouteComponentProps, AppRouteParams {}
@@ -86,8 +87,8 @@ function getStepContent(step: number) {
       return <Information />
     case 1:
       return <Contact />
-    //     case 2:
-    //       return <Review />;
+    case 2:
+      return <Image />
     default:
       return <div></div>
   }
@@ -98,6 +99,9 @@ export function Signup(props: SignupProps) {
   const [activeStep, setActiveStep] = React.useState(0)
 
   const handleNext = () => {
+    if (activeStep >= 2) {
+      window.location.href = 'explore'
+    }
     setActiveStep(activeStep + 1)
   }
 
@@ -123,31 +127,19 @@ export function Signup(props: SignupProps) {
             </Stepper>
           </MuiThemeProvider>
           <React.Fragment>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
-                </Typography>
-                <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order confirmation, and will send you an update
-                  when your order has shipped.
-                </Typography>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                {getStepContent(activeStep)}
-                <div className={classes.buttons}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} className={classes.button}>
-                      Back
-                    </Button>
-                  )}
-                  <ColorButton variant="contained" color="primary" onClick={handleNext} className={classes.button}>
-                    {activeStep === steps.length - 1 ? 'Complete' : 'Next'}
-                  </ColorButton>
-                </div>
-              </React.Fragment>
-            )}
+            <React.Fragment>
+              {getStepContent(activeStep)}
+              <div className={classes.buttons}>
+                {activeStep !== 0 && (
+                  <Button onClick={handleBack} className={classes.button}>
+                    Back
+                  </Button>
+                )}
+                <ColorButton variant="contained" color="primary" onClick={handleNext} className={classes.button}>
+                  {activeStep === steps.length - 1 ? 'Complete' : 'Next'}
+                </ColorButton>
+              </div>
+            </React.Fragment>
           </React.Fragment>
         </Paper>
       </main>

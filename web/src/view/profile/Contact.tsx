@@ -5,14 +5,12 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
-import * as filestack from 'filestack-js'
 import * as React from 'react'
 import { useEffect } from 'react'
 import { getContactById, getContactByIdVariables } from '../../graphql/query.gen'
 import { UserContext } from '../auth/user'
 import { fetchContact } from './fetchInfo'
 import { mutateInfo } from './mutateInfo'
-const imageUploadClient = filestack.init('A0fk1D5viSB2l6aXkzkrez')
 
 const ColorButton = withStyles(theme => ({
   root: {
@@ -67,15 +65,6 @@ export function Contact() {
       setLocation(location)
     }
   }, [data])
-
-  const imageUploadOptions = {
-    onUploadDone: async (res: any) => {
-      console.log(res.filesUploaded[0].url)
-      await mutateInfo({
-        imageURL: res.filesUploaded[0].url,
-      })
-    },
-  }
 
   async function handleChange() {
     await mutateInfo({
@@ -152,14 +141,6 @@ export function Contact() {
         </Grid> */}
       </Grid>
       <div className={classes.buttons}>
-        <ColorButton
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          onClick={() => imageUploadClient.picker(imageUploadOptions).open()}
-        >
-          {'Upload Image'}
-        </ColorButton>
         <ColorButton variant="contained" color="primary" onClick={handleChange} className={classes.button}>
           {'Save'}
         </ColorButton>

@@ -36,7 +36,7 @@ export function ProfileView(props: {
 }) {
   const classes = useStyles()
   const { onClose, open, userInfo } = props
-  const { dogName, dogAge, dogBreed, bio, contact, location } = userInfo
+  const { dogName, dogAge, dogBreed, bio, contact, location, imageURL } = userInfo
   const handleClose = () => {
     onClose()
   }
@@ -44,7 +44,7 @@ export function ProfileView(props: {
   return (
     <Dialog open={open} onClose={handleClose}>
       <Card className={classes.root}>
-        <CardMedia className={classes.media} image={userInfo!.imageURL!} />
+        <CardMedia className={classes.media} image={imageURL!} />
         <CardContent>
           <Typography className={classes.title} color="textSecondary" gutterBottom>
             {location}

@@ -3,15 +3,15 @@ import { GridListTileBar } from '@material-ui/core'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
 import { makeStyles } from '@material-ui/core/styles'
-import { RouteComponentProps } from '@reach/router'
+// import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import { getMatches } from '../../graphql/getMatches'
 import { GetMatches } from '../../graphql/query.gen'
 import { NavBar } from '../nav/NavBar'
-import { AppRouteParams } from '../nav/route'
-import { ProfileView } from '../profileView/ProfileView'
+// import { AppRouteParams } from '../nav/route'
+// import { ProfileView } from '../profileView/ProfileView'
 
-interface ExplorePageProps extends RouteComponentProps, AppRouteParams {}
+// interface MatchPageProps extends RouteComponentProps, AppRouteParams {}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,22 +31,23 @@ const useStyles = makeStyles(theme => ({
 }))
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function MatchPage(props: ExplorePageProps) {
+
+export function MatchPage() {
   const { loading, data } = useQuery<GetMatches>(getMatches)
   if (loading || data == null || data.getMatches == null) {
     return null
   }
 
   const matches = data.getMatches!
-  const [open, setOpen] = React.useState(false)
+  // const [open, setOpen] = React.useState(false)
 
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
+  // const handleClickOpen = () => {
+  //   setOpen(true)
+  // }
 
-  const handleClose = () => {
-    setOpen(false)
-  }
+  // const handleClose = () => {
+  //   setOpen(false)
+  // }
 
   const classes = useStyles()
   return (
@@ -57,11 +58,12 @@ export function MatchPage(props: ExplorePageProps) {
           <GridList cellHeight={180} className={classes.gridList}>
             {matches.map(match => (
               <div key={match!.user!.id}>
-                <GridListTile onClick={handleClickOpen}>
+                {/* <GridListTile onClick={handleClickOpen}> */}
+                <GridListTile>
                   <img src={match!.imageURL!} />
                   <GridListTileBar title={match!.dogName} subtitle={<span>Breed: {match!.dogBreed} </span>} />
                 </GridListTile>
-                <ProfileView open={open} onClose={handleClose} userInfo={match!} />
+                {/* <ProfileView open={open} onClose={handleClose} userInfo={match!} /> */}
               </div>
             ))}
           </GridList>

@@ -46,7 +46,7 @@ input UserInput {
   facebook: String
   linkedin: String
   location: String
-  image: String
+  imageURL: String
 }
 
 type UserInfo {

@@ -56,7 +56,7 @@ export function ProfileView(props: {
             Age: {dogAge}
             <br />
             Breed: {dogBreed} <br />
-            Email: {contact}
+            Contact: {contact}
           </Typography>
           <Typography variant="body2" component="p">
             {bio}

@@ -1,5 +1,7 @@
+import DataLoader from 'dataloader'
 import { readFileSync } from 'fs'
 import { PubSub } from 'graphql-yoga'
+import { Redis } from 'ioredis'
 import path from 'path'
 import { Matching } from '../entities/Matching'
 import { SwipeLeft } from '../entities/SwipeLeft'
@@ -20,6 +22,8 @@ interface Context {
   request: Request
   response: Response
   pubsub: PubSub
+  userLoader: DataLoader<number, User>
+  redis: Redis
 }
 
 export const graphqlRoot: Resolvers<Context> = {
@@ -34,6 +38,9 @@ export const graphqlRoot: Resolvers<Context> = {
         .getOne()
       const location = userInfo!.location
 
+      await ctx.redis.set('abc', 1)
+      const val = await ctx.redis.get('abc')
+      console.log(val)
       return (
         (await UserInfo.createQueryBuilder('userInfo')
           .where('userInfo.userId != :id', { id: ctx.user?.id })
@@ -49,7 +56,7 @@ export const graphqlRoot: Resolvers<Context> = {
               .getQuery()
             return 'userInfo.userId NOT IN (' + query1 + ' UNION ' + query2 + ')'
           })
-          .innerJoinAndSelect('userInfo.user', 'user')
+          .limit(10)
           .getMany()) || null
       )
     },
@@ -64,7 +71,6 @@ export const graphqlRoot: Resolvers<Context> = {
             return 'userInfo.userId IN (' + query + ')'
           })
           .setParameter('id', ctx.user?.id)
-          .innerJoinAndSelect('userInfo.user', 'user')
           .getMany()) || null
       )
     },
@@ -127,6 +133,12 @@ export const graphqlRoot: Resolvers<Context> = {
       }
 
       return true
+    },
+  },
+  UserInfo: {
+    user: async (self, _, ctx) => {
+      // return User.findOne({ where: { id: (self as any).id } }) as any
+      return ctx.userLoader.load((self as any).id) as any
     },
   },
 }

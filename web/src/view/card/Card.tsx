@@ -1,11 +1,12 @@
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import * as React from 'react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import TinderCard from 'react-tinder-card'
-import { GetPotential, SwipeLeft, SwipeRight } from '../../graphql/query.gen'
+import { getPotentialMatches } from '../../graphql/getPotentialMatches'
+import { GetPotential, GetPotential_getPotentialMatches, SwipeLeft, SwipeRight } from '../../graphql/query.gen'
 import { swipeLeft } from '../../graphql/swipeLeft'
 import { swipeRight } from '../../graphql/swipeRight'
 import { buttonListStyle, cardStyle, tagStyle, viewportStyle } from '../../style/card'
@@ -14,10 +15,8 @@ import { ProfileView } from '../profileView/ProfileView'
 // test image: https://i.insider.com/5df126b679d7570ad2044f3e?width=1100&format=jpeg&auto=webp
 const alreadyRemoved: number[] = []
 
-function Cards(props: GetPotential) {
-  const potentialMatches = props!.getPotentialMatches!.slice(0, 10)
-  let remainingMatches = potentialMatches
-  const [dogs, setDogs] = useState(potentialMatches)
+function Cards() {
+  const [dogs, setDogs] = useState<(GetPotential_getPotentialMatches | null)[]>([])
   const [open, setOpen] = useState(false)
   const [swipeRightMutation] = useMutation<SwipeRight>(swipeRight)
   const [swipeLeftMutation] = useMutation<SwipeLeft>(swipeLeft)
@@ -30,13 +29,30 @@ function Cards(props: GetPotential) {
     setOpen(false)
   }
 
+  const { loading, error, data, refetch } = useQuery<GetPotential>(getPotentialMatches)
+
   const childRefs: React.RefObject<any>[] | null = useMemo(
     () =>
-      Array(potentialMatches!.length)
-        .fill(0)
-        .map(() => React.createRef()),
-    []
+      data?.getPotentialMatches
+        ? Array(data?.getPotentialMatches?.length)
+            .fill(0)
+            .map(() => React.createRef())
+        : null,
+    [data]
   )
+
+  useEffect(() => {
+    if (data?.getPotentialMatches) {
+      setDogs(data?.getPotentialMatches)
+    }
+  }, [data])
+
+  if (loading || error || !data || !data.getPotentialMatches) {
+    return null
+  }
+
+  const potentialMatches = data.getPotentialMatches
+  let remainingMatches = potentialMatches
 
   const swiped = (direction: string, idToDelete: number) => {
     console.log('removing: ' + idToDelete)
@@ -48,10 +64,14 @@ function Cards(props: GetPotential) {
     }
   }
 
-  const outOfFrame = (userId: number) => {
+  const outOfFrame = async (userId: number) => {
     console.log(userId + ' left the screen!')
     remainingMatches = remainingMatches!.filter(dog => dog!.user!.id !== userId)
-    setDogs(remainingMatches)
+    if (remainingMatches.length === 0) {
+      await refetch()
+    } else {
+      setDogs(remainingMatches)
+    }
   }
 
   const swipe = (dir: string) => {

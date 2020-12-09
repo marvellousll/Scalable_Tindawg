@@ -39,7 +39,7 @@ export function renderApp(req: Request, res: Response, schema: any) {
     //  })
     //},
     //}),
-    cache: new InMemoryCache(),
+    cache: cache,
   })
 
   const engine = new Styletron.Server()

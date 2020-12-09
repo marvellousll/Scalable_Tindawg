@@ -8,7 +8,7 @@ export const options = {
       // name of the executor to use
       executor: 'constant-vus',
       // CHANGE HERE TO MODIFY LOAD
-      vus: 100,
+      vus: 200,
       duration: '60s',
     },
   },

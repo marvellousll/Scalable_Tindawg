@@ -38,6 +38,7 @@ export function Information() {
   const id = user.user?.id == null ? 0 : user.user?.id
   const { loading, data } = useQuery<getUserInfoById, getUserInfoByIdVariables>(fetchInfo, {
     variables: { userId: id },
+    fetchPolicy: 'cache-and-network',
   })
 
   const classes = useStyles()

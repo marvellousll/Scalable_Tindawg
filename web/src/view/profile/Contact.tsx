@@ -50,7 +50,10 @@ export function Contact() {
   const [_facebook, setFacebook] = React.useState('')
   const [_linkedin, setLinkedin] = React.useState('')
   const [_location, setLocation] = React.useState('')
-  const data = useQuery<getContactById, getContactByIdVariables>(fetchContact, { variables: { userId: id } })['data']
+  const data = useQuery<getContactById, getContactByIdVariables>(fetchContact, {
+    variables: { userId: id },
+    fetchPolicy: 'cache-and-network',
+  })['data']
 
   useEffect(() => {
     if (data && data.getUserInfoById) {

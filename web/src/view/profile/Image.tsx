@@ -43,7 +43,10 @@ export function Image() {
   const classes = useStyles()
 
   const [_image, setImage] = useState('')
-  const data = useQuery<getImageById, getImageByIdVariables>(fetchImage, { variables: { userId: id } })['data']
+  const data = useQuery<getImageById, getImageByIdVariables>(fetchImage, {
+    variables: { userId: id },
+    fetchPolicy: 'cache-and-network',
+  })['data']
 
   useEffect(() => {
     if (data && data.getUserInfoById) {

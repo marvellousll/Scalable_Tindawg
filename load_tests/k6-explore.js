@@ -28,7 +28,7 @@ export default function () {
 
   //sign up
   const resp0 = http.post('http://localhost:3000/auth/createUser', payload, params)
-  check(resp0, { 'Sign Up': (r) => r.status == 200 });
+  check(resp0, { 'Sign Up': r => r.status == 200 })
   sleep(Math.random() * 3)
 
   const resp1 = http.post(
@@ -36,26 +36,25 @@ export default function () {
     '{"operationName":"FetchUserContext","variables":{},"query":"query FetchUserContext{self{id}}"}',
     {
       headers: {
-      'Content-Type': 'application/json',
-     },
-    }
-  );
-  check(resp1, { 'User ID': (r) => r.status == 200 });
-  const id = resp1.json('data').self.id
-  //check(resp1, { 'user ID': (r) => r.status == 200 });
-
-  //getUserInfobyID
-  let getUserInfoPayload = '{"operationName":"getUserInfoById","variables":{"userId":' + id + '},"query":"query getUserInfoById($userId: Int!) {\\n  getUserInfoById(userId: $userId) {\\n    dogName\\n    dogAge\\n    dogBreed\\n    bio\\n    __typename\\n  }\\n}\\n"}'
-  const resp2 = http.post(
-    'http://localhost:3000/graphql',
-    getUserInfoPayload,
-    {
-      headers: {
         'Content-Type': 'application/json',
       },
     }
   )
-  check(resp2, { 'User INFO': (r) => r.status == 200 });
+  check(resp1, { 'User ID': r => r.status == 200 })
+  const id = resp1.json('data').self.id
+  //check(resp1, { 'user ID': (r) => r.status == 200 });
+
+  //getUserInfobyID
+  let getUserInfoPayload =
+    '{"operationName":"getUserInfoById","variables":{"userId":' +
+    id +
+    '},"query":"query getUserInfoById($userId: Int!) {\\n  getUserInfoById(userId: $userId) {\\n    dogName\\n    dogAge\\n    dogBreed\\n    bio\\n    __typename\\n  }\\n}\\n"}'
+  const resp2 = http.post('http://localhost:3000/graphql', getUserInfoPayload, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  check(resp2, { 'User INFO': r => r.status == 200 })
 
   //changeInfo1
   const resp3 = http.post(
@@ -67,7 +66,7 @@ export default function () {
       },
     }
   )
-  check(resp3, { 'Change INFO 1': (r) => r.status == 200 });
+  check(resp3, { 'Change INFO 1': r => r.status == 200 })
   sleep(Math.random() * 3)
 
   //changeInfo2
@@ -80,7 +79,7 @@ export default function () {
       },
     }
   )
-  check(resp4, { 'Change INFO 2': (r) => r.status == 200 });
+  check(resp4, { 'Change INFO 2': r => r.status == 200 })
   sleep(Math.random() * 3)
 
   const resp45 = http.get('http://localhost:3000/app/explore')
@@ -97,7 +96,7 @@ export default function () {
       },
     }
   )
-  check(resp5, { 'Get Potential': (r) => r.status == 200 });
+  check(resp5, { 'Get Potential': r => r.status == 200 })
 
   //Swipe Right1
   const resp6 = http.post(
@@ -109,7 +108,7 @@ export default function () {
       },
     }
   )
-  check(resp6, { 'Swipe Right 1': (r) => r.status == 200 });
+  check(resp6, { 'Swipe Right 1': r => r.status == 200 })
   sleep(Math.random() * 1)
 
   //Swipe Right2
@@ -117,12 +116,12 @@ export default function () {
     'http://localhost:3000/graphql',
     '{"operationName":"SwipeRight","variables":{"userId":9},"query":"mutation SwipeRight($userId: Int!) {\\n  swipeRight(userId: $userId)\\n}\\n"}',
     {
-       headers: {
+      headers: {
         'Content-Type': 'application/json',
       },
     }
   )
-  check(resp7, { 'Swipe Right 2': (r) => r.status == 200 });
+  check(resp7, { 'Swipe Right 2': r => r.status == 200 })
   sleep(Math.random() * 1)
 
   //Swipe Left1
@@ -130,12 +129,12 @@ export default function () {
     'http://localhost:3000/graphql',
     '{"operationName":"SwipeLeft","variables":{"userId":8},"query":"mutation SwipeLeft($userId: Int!) {\\n  swipeLeft(userId: $userId)\\n}\\n"}',
     {
-        headers: {
-         'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
       },
     }
   )
-  check(resp8, { 'Swipe Left 1': (r) => r.status == 200 });
+  check(resp8, { 'Swipe Left 1': r => r.status == 200 })
   sleep(Math.random() * 1)
 
   //Swipe Left2
@@ -143,12 +142,12 @@ export default function () {
     'http://localhost:3000/graphql',
     '{"operationName":"SwipeLeft","variables":{"userId":7},"query":"mutation SwipeLeft($userId: Int!) {\\n  swipeLeft(userId: $userId)\\n}\\n"}',
     {
-        headers: {
-         'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
       },
     }
   )
-  check(resp9, { 'Swipe Left 2': (r) => r.status == 200 });
+  check(resp9, { 'Swipe Left 2': r => r.status == 200 })
   sleep(Math.random() * 1)
 
   //Get Match
@@ -156,21 +155,18 @@ export default function () {
     'http://localhost:3000/graphql',
     '{"operationName":"GetMatches","variables":{},"query":"query GetMatches {\\n  getMatches {\\n    user {\\n      id\\n      __typename\\n    }\\n    dogName\\n    dogAge\\n    dogBreed\\n    location\\n    bio\\n    contact\\n    facebook\\n    linkedin\\n    imageURL\\n    __typename\\n  }\\n}\\n"}',
     {
-        headers: {
-         'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
       },
     }
   )
-  check(resp10, { 'Get Match': (r) => r.status == 200 });
+  check(resp10, { 'Get Match': r => r.status == 200 })
   sleep(Math.random() * 3)
 
   //logout
   const resp11 = http.post('http://localhost:3000/auth/logout', '', params)
-  check(resp11, { 'Log Out': (r) => r.status == 200 });
+  check(resp11, { 'Log Out': r => r.status == 200 })
 }
-
-
-
 
 const count200 = new Counter('status_code_2xx')
 const count300 = new Counter('status_code_3xx')

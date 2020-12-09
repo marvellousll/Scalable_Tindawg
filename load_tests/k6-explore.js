@@ -1,5 +1,5 @@
 import http from 'k6/http'
-import { sleep } from 'k6'
+import { sleep, check } from 'k6'
 import { Counter, Rate } from 'k6/metrics'
 
 export const options = {
@@ -8,26 +8,165 @@ export const options = {
       // name of the executor to use
       executor: 'constant-vus',
 
-      vus: 1000,
+      vus: 50,
       duration: '30s',
     },
   },
 }
 
 export default function () {
-  recordRates(http.get('http://localhost:3000/app/explore'))
-  //const resp = http.post(
-  //  'http://localhost:3000/graphql',
-  //  '{"operationName":"GetPotential","variables":{},"query":"query GetPotential {\n  getPotentialMatches {\n    user {\n      id\n      __typename\n    }\n    dogName\n    dogAge\n    dogBreed\n    location\n    bio\n    contact\n    facebook\n    linkedin\n    imageURL\n    __typename\n  }\n}\n"}',
-  //  {
-  //    headers: {
-  //      'Content-Type': 'application/json',
-  //    },
-  //  }
-  //)
-  // )
+  var randomNum = '' + Math.random(1) * 100
+  var payload = JSON.stringify({
+    email: 'xxx@gmail.com' + randomNum,
+    password: '123123',
+  })
+  var params = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }
+
+  //sign up
+  const resp0 = http.post('http://localhost:3000/auth/createUser', payload, params)
+  check(resp0, { 'sign up': (r) => r.status == 200 });
   sleep(Math.random() * 3)
+
+  //fetchUserContext
+  const resp1 = http.post(
+    'http://localhost:3000/graphql',
+    '{"operationName":"FetchUserContext","variables":{},"query":"query FetchUserContext {\n  self {\n    id\n    email\n    userType\n    __typename\n  }\n}\n"}',
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  check(resp1, { 'user ID': (r) => r.status == 200 });
+
+  // //var userID = resp1.body.data.self.id;
+  // //getUserInfobyID
+  // let getUserInfoPayload = '{"operationName":"getUserInfoById","variables":{"userId":' + '1000' + '},"query":"query getUserInfoById($userId: Int!) {\n  getUserInfoById(userId: $userId) {\n    dogName\n    dogAge\n    dogBreed\n    bio\n    __typename\n  }\n}\n"}'
+  // const resp2 = http.post(
+  //   'http://localhost:3000/graphql',
+  //   getUserInfoPayload,
+  //   {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }
+  // )
+  // check(resp2, { 'user INFO': (r) => r.status == 200 });
+
+  // //changeInfo1
+  // const resp3 = http.post(
+  //   'http://localhost:3000/graphql',
+  //   '{"operationName":"ChangeInfo","variables":{"input":{"dogName":"xxx","dogAge":1,"dogBreed":"x","bio":"xxx"}},"query":"mutation ChangeInfo($input: UserInput!) {\n  changeUserInfo(input: $input)\n}\n"}',
+  //   {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }
+  // )
+  // check(resp3, { 'change INFO1': (r) => r.status == 200 });
+  // sleep(Math.random() * 3)
+
+  // //changeInfo2
+  // const resp4 = http.post(
+  //   'http://localhost:3000/graphql',
+  //   '{"operationName":"ChangeInfo","variables":{"input":{"contact":"123123","facebook":"","linkedin":"","location":"Los Angeles"}},"query":"mutation ChangeInfo($input: UserInput!) {\n  changeUserInfo(input: $input)\n}\n"}',
+  //   {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }
+  // )
+  // check(resp4, { 'change INFO2': (r) => r.status == 200 });
+  // sleep(Math.random() * 3)
+
+  // //GetPotential
+  // const resp5 = http.post(
+  //   'http://localhost:3000/graphql',
+  //   '{"operationName":"GetPotential","variables":{},"query":"query GetPotential {\n  getPotentialMatches {\n    user {\n      id\n      __typename\n    }\n    dogName\n    dogAge\n    dogBreed\n    location\n    bio\n    contact\n    facebook\n    linkedin\n    imageURL\n    __typename\n  }\n}\n"}',
+  //   {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }
+  // )
+  // check(resp5, { 'get Potential': (r) => r.status == 200 });
+
+  // //Swipe Right1
+  // const resp6 = http.post(
+  //   'http://localhost:3000/graphql',
+  //   '{"operationName":"SwipeRight","variables":{"userId":10},"query":"mutation SwipeRight($userId: Int!) {\n  swipeRight(userId: $userId)\n}\n"}',
+  //   {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }
+  // )
+  // check(resp6, { 'swipe Right 1': (r) => r.status == 200 });
+  // sleep(Math.random() * 1)
+
+  // //Swipe Right2
+  // const resp7 = http.post(
+  //   'http://localhost:3000/graphql',
+  //   '{"operationName":"SwipeRight","variables":{"userId":9},"query":"mutation SwipeRight($userId: Int!) {\n  swipeRight(userId: $userId)\n}\n"}',
+  //   {
+  //      headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }
+  // )
+  // check(resp7, { 'swipe Right 2': (r) => r.status == 200 });
+  // sleep(Math.random() * 1)
+
+  // //Swipe Left1
+  // const resp8 = http.post(
+  //   'http://localhost:3000/graphql',
+  //   '{"operationName":"SwipeLeft","variables":{"userId":8},"query":"mutation SwipeLeft($userId: Int!) {\n  swipeLeft(userId: $userId)\n}\n"}',
+  //   {
+  //       headers: {
+  //        'Content-Type': 'application/json',
+  //     },
+  //   }
+  // )
+  // check(resp8, { 'swipe Left 1': (r) => r.status == 200 });
+  // sleep(Math.random() * 1)
+
+  // //Swipe Left2
+  // const resp9 = http.post(
+  //   'http://localhost:3000/graphql',
+  //   '{"operationName":"SwipeLeft","variables":{"userId":7},"query":"mutation SwipeLeft($userId: Int!) {\n  swipeLeft(userId: $userId)\n}\n"}',
+  //   {
+  //       headers: {
+  //        'Content-Type': 'application/json',
+  //     },
+  //   }
+  // )
+  // check(resp9, { 'swipe Left 2': (r) => r.status == 200 });
+  // sleep(Math.random() * 1)
+
+  // //Get Match
+  // const resp10 = http.post(
+  //   'http://localhost:3000/graphql',
+  //   '{"operationName":"GetMatches","variables":{},"query":"query GetMatches {\n  getMatches {\n    user {\n      id\n      __typename\n    }\n    dogName\n    dogAge\n    dogBreed\n    location\n    bio\n    contact\n    facebook\n    linkedin\n    imageURL\n    __typename\n  }\n}\n"}',
+  //   {
+  //       headers: {
+  //        'Content-Type': 'application/json',
+  //     },
+  //   }
+  // )
+  // check(resp10, { 'GetMatch': (r) => r.status == 200 });
+  // sleep(Math.random() * 3)
+
+  //logout
+  const resp11 = http.post('http://localhost:3000/auth/logout', '', params)
+  check(resp11, { 'LOG OUT': (r) => r.status == 200 });
 }
+
+
+
 
 const count200 = new Counter('status_code_2xx')
 const count300 = new Counter('status_code_3xx')

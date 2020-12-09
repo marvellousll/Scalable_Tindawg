@@ -8,8 +8,8 @@ export const options = {
       // name of the executor to use
       executor: 'constant-vus',
       // CHANGE HERE TO MODIFY LOAD
-      vus: 200,
-      duration: '60s',
+      vus: 500,
+      duration: '120s',
     },
   },
 }
@@ -82,6 +82,10 @@ export default function () {
   )
   check(resp4, { 'Change INFO 2': (r) => r.status == 200 });
   sleep(Math.random() * 3)
+
+  const resp45 = http.get('http://localhost:3000/app/explore')
+  check(resp45, { 'HTTP get': (r) => r.status == 200 });
+  sleep(Math.random() * 1)
 
   //GetPotential
   const resp5 = http.post(

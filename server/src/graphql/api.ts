@@ -50,7 +50,6 @@ export const graphqlRoot: Resolvers<Context> = {
             return 'userInfo.userId NOT IN (' + query1 + ' UNION ' + query2 + ')'
           })
           .innerJoinAndSelect('userInfo.user', 'user')
-          .limit(10)
           .getMany()) || null
       )
     },

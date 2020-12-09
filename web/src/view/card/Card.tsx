@@ -15,7 +15,7 @@ import { ProfileView } from '../profileView/ProfileView'
 const alreadyRemoved: number[] = []
 
 function Cards(props: GetPotential) {
-  const potentialMatches = props!.getPotentialMatches
+  const potentialMatches = props!.getPotentialMatches!.slice(0, 10)
   let remainingMatches = potentialMatches
   const [dogs, setDogs] = useState(potentialMatches)
   const [open, setOpen] = useState(false)

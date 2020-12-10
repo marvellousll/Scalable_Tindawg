@@ -22,7 +22,6 @@ import { checkEqual, Unpromise } from '../../common/src/util'
 import { Config } from './config'
 import { migrate } from './db/migrate'
 import { initORM } from './db/sql'
-import { Session } from './entities/Session'
 import { User } from './entities/User'
 import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
@@ -40,7 +39,7 @@ const createUserLoader = () =>
     return userIds.map(sid => userIdToUser[sid])
   })
 
-const my_redis = new Redis()
+const session_redis = new Redis()
 const server = new GraphQLServer({
   typeDefs: getSchema(),
   resolvers: graphqlRoot as any,
@@ -49,7 +48,7 @@ const server = new GraphQLServer({
     pubsub,
     user: (ctx.request as any)?.user || null,
     userLoader: createUserLoader(),
-    redis: my_redis,
+    redis: session_redis,
   }),
 })
 
@@ -119,10 +118,21 @@ server.express.post(
 async function createSession(user: User): Promise<string> {
   const authToken = uuidv4()
 
-  const session = new Session()
-  session.authToken = authToken
-  session.user = user
-  await Session.save(session).then(s => console.log('saved session ' + s.id))
+  // const session = new Session()
+  // session.authToken = authToken
+  // session.user = user
+  // await Session.save(session).then(s => console.log('saved session ' + s.id))
+  await session_redis.hmset(
+    `session:${authToken}`,
+    'id',
+    user.id,
+    'email',
+    user.email,
+    'userType',
+    user.userType,
+    'password',
+    user.password
+  )
 
   return authToken
 }
@@ -133,7 +143,7 @@ server.express.post(
     console.log('POST /auth/logout')
     const authToken = req.cookies.authToken
     if (authToken) {
-      await Session.delete({ authToken })
+      await session_redis.del(`session:${authToken}`)
     }
     res.status(200).cookie('authToken', '', { maxAge: 0 }).send('Success!')
   })
@@ -259,10 +269,11 @@ server.express.post(
   asyncRoute(async (req, res, next) => {
     const authToken = req.cookies.authToken || req.header('x-authtoken')
     if (authToken) {
-      const session = await Session.findOne({ where: { authToken }, relations: ['user'] })
-      if (session) {
+      const session = await session_redis.hgetall(`session:${authToken}`)
+      if (Object.keys(session).length !== 0) {
+        console.log(session)
         const reqAny = req as any
-        reqAny.user = session.user
+        reqAny.user = { id: session.id, email: session.email, userType: session.userType, password: session.password }
       }
     }
     next()

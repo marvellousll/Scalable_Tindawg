@@ -49,7 +49,9 @@ export function MatchPage(props: MatchPageProps) {
 
   const classes = useStyles()
 
-  const { loading, data } = useQuery<GetMatches>(getMatches)
+  const { loading, data } = useQuery<GetMatches>(getMatches, {
+    fetchPolicy: 'cache-and-network',
+  })
   if (loading || data == null || data.getMatches == null) {
     return null
   }

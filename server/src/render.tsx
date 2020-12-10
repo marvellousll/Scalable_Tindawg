@@ -18,6 +18,9 @@ export function renderApp(req: Request, res: Response, schema: any) {
       Query: {
         fields: {
           getUserInfoById: {},
+          getMatches: {
+            merge: true,
+          },
         },
       },
     },

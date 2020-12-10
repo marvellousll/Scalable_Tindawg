@@ -271,7 +271,6 @@ server.express.post(
     if (authToken) {
       const session = await session_redis.hgetall(`session:${authToken}`)
       if (Object.keys(session).length !== 0) {
-        console.log(session)
         const reqAny = req as any
         reqAny.user = { id: session.id, email: session.email, userType: session.userType, password: session.password }
       }

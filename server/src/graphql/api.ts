@@ -38,9 +38,6 @@ export const graphqlRoot: Resolvers<Context> = {
         .getOne()
       const location = userInfo!.location
 
-      await ctx.redis.set('abc', 1)
-      const val = await ctx.redis.get('abc')
-      console.log(val)
       return (
         (await UserInfo.createQueryBuilder('userInfo')
           .where('userInfo.userId != :id', { id: ctx.user?.id })

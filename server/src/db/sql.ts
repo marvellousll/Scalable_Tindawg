@@ -23,7 +23,7 @@ export async function initORM() {
     logging: false,
     entities: [User, Session, Matching, SwipeRight, SwipeLeft, UserInfo],
     extra: {
-      connectionLimit: 5,
+      connectionLimit: 50,
     },
   })
 }

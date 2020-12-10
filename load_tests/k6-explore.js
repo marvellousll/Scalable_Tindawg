@@ -83,7 +83,7 @@ export default function () {
   sleep(Math.random() * 3)
 
   const resp45 = http.get('http://localhost:3000/app/explore')
-  check(resp45, { 'HTTP get': (r) => r.status == 200 });
+  check(resp45, { 'HTTP get': r => r.status == 200 })
   sleep(Math.random() * 1)
 
   //GetPotential

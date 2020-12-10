@@ -9,9 +9,11 @@ require('honeycomb-beeline')({
 import assert from 'assert'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import DataLoader from 'dataloader'
 import { json, raw, RequestHandler, static as expressStatic } from 'express'
 import { getOperationAST, parse as parseGraphql, specifiedRules, subscribe as gqlSubscribe, validate } from 'graphql'
 import { GraphQLServer } from 'graphql-yoga'
+import Redis from 'ioredis'
 import { forAwaitEach, isAsyncIterable } from 'iterall'
 import path from 'path'
 import 'reflect-metadata'
@@ -20,7 +22,6 @@ import { checkEqual, Unpromise } from '../../common/src/util'
 import { Config } from './config'
 import { migrate } from './db/migrate'
 import { initORM } from './db/sql'
-import { Session } from './entities/Session'
 import { User } from './entities/User'
 import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
@@ -28,11 +29,27 @@ import { UserType } from './graphql/schema.types'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
 
+const createUserLoader = () =>
+  new DataLoader<number, User>(async userIds => {
+    const users = await User.findByIds(userIds as number[])
+    const userIdToUser: Record<number, User> = {}
+    users.forEach(s => {
+      userIdToUser[s.id] = s
+    })
+    return userIds.map(sid => userIdToUser[sid])
+  })
+
+const session_redis = new Redis()
 const server = new GraphQLServer({
   typeDefs: getSchema(),
   resolvers: graphqlRoot as any,
-  // context: ctx => ({ ...ctx, pubsub, user: (ctx.request as any)?.user || null }),
-  context: ctx => ({ ...ctx, pubsub, user: (ctx.request as any)?.user || null }),
+  context: ctx => ({
+    ...ctx,
+    pubsub,
+    user: (ctx.request as any)?.user || null,
+    userLoader: createUserLoader(),
+    redis: session_redis,
+  }),
 })
 
 server.express.use(cookieParser())
@@ -101,10 +118,21 @@ server.express.post(
 async function createSession(user: User): Promise<string> {
   const authToken = uuidv4()
 
-  const session = new Session()
-  session.authToken = authToken
-  session.user = user
-  await Session.save(session).then(s => console.log('saved session ' + s.id))
+  // const session = new Session()
+  // session.authToken = authToken
+  // session.user = user
+  // await Session.save(session).then(s => console.log('saved session ' + s.id))
+  await session_redis.hmset(
+    `session:${authToken}`,
+    'id',
+    user.id,
+    'email',
+    user.email,
+    'userType',
+    user.userType,
+    'password',
+    user.password
+  )
 
   return authToken
 }
@@ -115,7 +143,7 @@ server.express.post(
     console.log('POST /auth/logout')
     const authToken = req.cookies.authToken
     if (authToken) {
-      await Session.delete({ authToken })
+      await session_redis.del(`session:${authToken}`)
     }
     res.status(200).cookie('authToken', '', { maxAge: 0 }).send('Success!')
   })
@@ -241,10 +269,10 @@ server.express.post(
   asyncRoute(async (req, res, next) => {
     const authToken = req.cookies.authToken || req.header('x-authtoken')
     if (authToken) {
-      const session = await Session.findOne({ where: { authToken }, relations: ['user'] })
-      if (session) {
+      const session = await session_redis.hgetall(`session:${authToken}`)
+      if (Object.keys(session).length !== 0) {
         const reqAny = req as any
-        reqAny.user = session.user
+        reqAny.user = { id: session.id, email: session.email, userType: session.userType, password: session.password }
       }
     }
     next()

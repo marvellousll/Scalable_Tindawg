@@ -1,6 +1,6 @@
 require('honeycomb-beeline')({
-  writeKey: process.env.HONEYCOMB_KEY || 'd29d5f5ec24178320dae437383480737',
-  dataset: process.env.APP_NAME || 'bespin',
+  writeKey: process.env.HONEYCOMB_KEY || '774ca3dd11233bed0617df0dbf5b68f6',
+  dataset: process.env.APP_NAME || 'tindawg',
   serviceName: process.env.APPSERVER_TAG || 'local',
   enabledInstrumentations: ['express', 'mysql2', 'react-dom/server'],
   sampleRate: 10,
@@ -9,9 +9,11 @@ require('honeycomb-beeline')({
 import assert from 'assert'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import DataLoader from 'dataloader'
 import { json, raw, RequestHandler, static as expressStatic } from 'express'
 import { getOperationAST, parse as parseGraphql, specifiedRules, subscribe as gqlSubscribe, validate } from 'graphql'
 import { GraphQLServer } from 'graphql-yoga'
+import Redis from 'ioredis'
 import { forAwaitEach, isAsyncIterable } from 'iterall'
 import path from 'path'
 import 'reflect-metadata'
@@ -20,17 +22,34 @@ import { checkEqual, Unpromise } from '../../common/src/util'
 import { Config } from './config'
 import { migrate } from './db/migrate'
 import { initORM } from './db/sql'
-import { Session } from './entities/Session'
 import { User } from './entities/User'
 import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
+import { UserType } from './graphql/schema.types'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
 
+const createUserLoader = () =>
+  new DataLoader<number, User>(async userIds => {
+    const users = await User.findByIds(userIds as number[])
+    const userIdToUser: Record<number, User> = {}
+    users.forEach(s => {
+      userIdToUser[s.id] = s
+    })
+    return userIds.map(sid => userIdToUser[sid])
+  })
+
+const session_redis = new Redis()
 const server = new GraphQLServer({
   typeDefs: getSchema(),
   resolvers: graphqlRoot as any,
-  context: ctx => ({ ...ctx, pubsub, user: (ctx.request as any)?.user || null }),
+  context: ctx => ({
+    ...ctx,
+    pubsub,
+    user: (ctx.request as any)?.user || null,
+    userLoader: createUserLoader(),
+    redis: session_redis,
+  }),
 })
 
 server.express.use(cookieParser())
@@ -48,8 +67,31 @@ server.express.get('/', (req, res) => {
 
 server.express.get('/app/*', (req, res) => {
   console.log('GET /app')
-  renderApp(req, res)
+  renderApp(req, res, server.executableSchema)
 })
+
+const SESSION_DURATION = 30 * 24 * 60 * 60 * 1000 // 30 days
+
+server.express.post(
+  '/auth/createUser',
+  asyncRoute(async (req, res) => {
+    console.log('POST /auth/createUser')
+    // create User model with data from HTTP request
+    let user = new User()
+    user.email = req.body.email
+    user.password = req.body.password
+    user.userType = UserType.User
+
+    // save the User model to the database, refresh `user` to get ID
+    user = await user.save()
+
+    const authToken = await createSession(user)
+    res
+      .status(200)
+      .cookie('authToken', authToken, { maxAge: SESSION_DURATION, path: '/', httpOnly: true, secure: Config.isProd })
+      .send('Success!')
+  })
+)
 
 server.express.post(
   '/auth/login',
@@ -59,21 +101,13 @@ server.express.post(
     const password = req.body.password
 
     const user = await User.findOne({ where: { email } })
-    if (!user || password !== Config.adminPassword) {
+    if (!user || password !== user.password) {
       res.status(403).send('Forbidden')
       return
     }
 
-    const authToken = uuidv4()
-
-    await Session.delete({ user })
-
-    const session = new Session()
-    session.authToken = authToken
-    session.user = user
-    await Session.save(session).then(s => console.log('saved session ' + s.id))
-
-    const SESSION_DURATION = 30 * 24 * 60 * 60 * 1000 // 30 days
+    console.log('success')
+    const authToken = await createSession(user)
     res
       .status(200)
       .cookie('authToken', authToken, { maxAge: SESSION_DURATION, path: '/', httpOnly: true, secure: Config.isProd })
@@ -81,13 +115,35 @@ server.express.post(
   })
 )
 
+async function createSession(user: User): Promise<string> {
+  const authToken = uuidv4()
+
+  // const session = new Session()
+  // session.authToken = authToken
+  // session.user = user
+  // await Session.save(session).then(s => console.log('saved session ' + s.id))
+  await session_redis.hmset(
+    `session:${authToken}`,
+    'id',
+    user.id,
+    'email',
+    user.email,
+    'userType',
+    user.userType,
+    'password',
+    user.password
+  )
+
+  return authToken
+}
+
 server.express.post(
   '/auth/logout',
   asyncRoute(async (req, res) => {
     console.log('POST /auth/logout')
     const authToken = req.cookies.authToken
     if (authToken) {
-      await Session.delete({ authToken })
+      await session_redis.del(`session:${authToken}`)
     }
     res.status(200).cookie('authToken', '', { maxAge: 0 }).send('Success!')
   })
@@ -213,10 +269,10 @@ server.express.post(
   asyncRoute(async (req, res, next) => {
     const authToken = req.cookies.authToken || req.header('x-authtoken')
     if (authToken) {
-      const session = await Session.findOne({ where: { authToken }, relations: ['user'] })
-      if (session) {
+      const session = await session_redis.hgetall(`session:${authToken}`)
+      if (Object.keys(session).length !== 0) {
         const reqAny = req as any
-        reqAny.user = session.user
+        reqAny.user = { id: session.id, email: session.email, userType: session.userType, password: session.password }
       }
     }
     next()

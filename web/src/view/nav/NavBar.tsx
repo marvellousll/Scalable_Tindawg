@@ -1,3 +1,4 @@
+import { red } from '@material-ui/core/colors'
 import { useLocation } from '@reach/router'
 import * as React from 'react'
 import { useContext, useEffect } from 'react'
@@ -9,30 +10,26 @@ import { style } from '../../style/styled'
 import { UserContext } from '../auth/user'
 import { addToastListener, removeToastListener, Toast, ToastType } from '../toast/toast'
 import { link } from './Link'
-import { getLoginPath, getPath, getSurveyPath, Route } from './route'
+import { getLoginPath, getPath, Route } from './route'
 
 const title = {
-  name: 'CS188',
-  path: getPath(Route.HOME),
+  name: 'Tindawg',
+  path: getPath(Route.LOGIN),
   title: true,
 }
 
 const otherTabs = [
   {
-    name: 'lectures',
-    path: getPath(Route.LECTURES),
-  },
-  {
-    name: 'projects',
-    path: getPath(Route.PROJECTS),
-  },
-  {
-    name: 'playground',
-    path: getPath(Route.PLAYGROUND),
-  },
-  {
     name: 'explore',
     path: getPath(Route.EXPLORE),
+  },
+  {
+    name: 'match',
+    path: getPath(Route.MATCH),
+  },
+  {
+    name: 'edit',
+    path: getPath(Route.EDIT),
   },
 ]
 
@@ -113,7 +110,6 @@ function SubNav() {
   }
   return (
     <Nav $isSubNav>
-      <NavItem name="surveys" path={getSurveyPath()} />
       <NavItem name={user ? 'logout' : 'login'} path={getLoginPath()} />
     </Nav>
   )
@@ -123,7 +119,9 @@ const Nav = style(
   'nav',
   'flex white items-center list pa2 ph4 ph5-ns ph7-l avenir f4',
   (p: { $isSubNav?: boolean }) => ({
-    background: `linear-gradient(90deg, ${'#005587'} 0%, ${'#2774AE'} 100%)`,
+    background: red[400],
+    // background: `linear-gradient(90deg, ${'#005587'} 0%, ${'#2774AE'} 100%)`,
+
     opacity: '0.9',
     paddingTop: p.$isSubNav ? 0 : undefined,
     paddingBottom: p.$isSubNav ? 0 : undefined,

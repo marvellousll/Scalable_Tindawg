@@ -1,91 +1,115 @@
+import { useMutation, useQuery } from '@apollo/client'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import * as React from 'react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import TinderCard from 'react-tinder-card'
-import { buttonsStyle, cardStyle, tagStyle, viewportStyle } from '../../style/card'
+import { getPotentialMatches } from '../../graphql/getPotentialMatches'
+import { GetPotential, GetPotential_getPotentialMatches, SwipeLeft, SwipeRight } from '../../graphql/query.gen'
+import { swipeLeft } from '../../graphql/swipeLeft'
+import { swipeRight } from '../../graphql/swipeRight'
+import { buttonListStyle, cardStyle, tagStyle, viewportStyle } from '../../style/card'
+import { ProfileView } from '../profileView/ProfileView'
 
-const db = [
-  {
-    name: 'Dog1',
-  },
-  {
-    name: 'Dog2',
-  },
-  {
-    name: 'Dog3',
-  },
-  {
-    name: 'Dog4',
-  },
-  {
-    name: 'Dog5',
-  },
-]
-
-const alreadyRemoved: string[] = []
-let charactersState = db // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
+// test image: https://i.insider.com/5df126b679d7570ad2044f3e?width=1100&format=jpeg&auto=webp
+const alreadyRemoved: number[] = []
 
 function Cards() {
-  const [characters, setCharacters] = useState(db)
-  const [lastDirection, setLastDirection] = useState<string>()
-  console.log(lastDirection)
+  const [dogs, setDogs] = useState<(GetPotential_getPotentialMatches | null)[]>([])
+  const [open, setOpen] = useState(false)
+  const [swipeRightMutation] = useMutation<SwipeRight>(swipeRight)
+  const [swipeLeftMutation] = useMutation<SwipeLeft>(swipeLeft)
 
-  const childRefs: React.RefObject<any>[] = useMemo(
-    () =>
-      Array(db.length)
-        .fill(0)
-        .map(() => React.createRef()),
-    []
-  )
-
-  const swiped = (direction: string, nameToDelete: string) => {
-    console.log('removing: ' + nameToDelete)
-    setLastDirection(direction)
-    alreadyRemoved.push(nameToDelete)
+  const handleClickOpen = () => {
+    setOpen(true)
   }
 
-  const outOfFrame = (name: string) => {
-    console.log(name + ' left the screen!')
-    charactersState = charactersState.filter(character => character.name !== name)
-    setCharacters(charactersState)
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const { loading, error, data, refetch } = useQuery<GetPotential>(getPotentialMatches)
+
+  const childRefs: React.RefObject<any>[] | null = useMemo(
+    () =>
+      data?.getPotentialMatches
+        ? Array(data?.getPotentialMatches?.length)
+            .fill(0)
+            .map(() => React.createRef())
+        : null,
+    [data]
+  )
+
+  useEffect(() => {
+    if (data?.getPotentialMatches) {
+      setDogs(data?.getPotentialMatches)
+    }
+  }, [data])
+
+  if (loading || error || !data || !data.getPotentialMatches) {
+    return null
+  }
+
+  const potentialMatches = data.getPotentialMatches
+  let remainingMatches = potentialMatches
+
+  const swiped = (direction: string, idToDelete: number) => {
+    console.log('removing: ' + idToDelete)
+    alreadyRemoved.push(idToDelete)
+    if (direction === 'right') {
+      void swipeRightMutation({ variables: { userId: idToDelete } })
+    } else {
+      void swipeLeftMutation({ variables: { userId: idToDelete } })
+    }
+  }
+
+  const outOfFrame = async (userId: number) => {
+    console.log(userId + ' left the screen!')
+    remainingMatches = remainingMatches!.filter(dog => dog!.user!.id !== userId)
+    if (remainingMatches.length === 0) {
+      await refetch()
+    } else {
+      setDogs(remainingMatches)
+    }
   }
 
   const swipe = (dir: string) => {
-    const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.name))
+    const cardsLeft = dogs!.filter(dog => !alreadyRemoved.includes(dog!.user!.id))
     if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1].name // Find the card object to be removed
-      const index = db.map(person => person.name).indexOf(toBeRemoved) // Find the index of which to make the reference to
+      const toBeRemoved = cardsLeft[cardsLeft.length - 1]!.user!.id // Find the card object to be removed
+      const index = potentialMatches!.map(dog => dog!.user!.id).indexOf(toBeRemoved) // Find the index of which to make the reference to
       alreadyRemoved.push(toBeRemoved) // Make sure the next card gets removed next time if this card do not have time to exit the screen
-      childRefs[index].current.swipe(dir) // Swipe the card!
+      childRefs![index].current.swipe(dir) // Swipe the card!
     }
   }
 
   return (
     <div>
       <div style={viewportStyle}>
-        {characters.map((character, index) => (
-          <TinderCard
-            ref={childRefs[index]}
-            key={character.name}
-            onSwipe={dir => swiped(dir, character.name)}
-            onCardLeftScreen={() => outOfFrame(character.name)}
-          >
-            <div
-              style={{
-                ...cardStyle,
-                backgroundImage: 'url(https://i.insider.com/5df126b679d7570ad2044f3e?width=1100&format=jpeg&auto=webp)',
-                backgroundPosition: 'center',
-                backgroundSize: '200%',
-                backgroundRepeat: 'no-repeat',
-              }}
+        {dogs!.map((dog, index) => (
+          <div key={dog!.user!.id} onDoubleClick={handleClickOpen}>
+            <TinderCard
+              ref={childRefs![index]}
+              onSwipe={dir => swiped(dir, dog!.user!.id)}
+              onCardLeftScreen={() => outOfFrame(dog!.user!.id)}
             >
-              <h3 style={tagStyle}>{character.name}</h3>
-            </div>
-          </TinderCard>
+              <div
+                style={{
+                  ...cardStyle,
+                  backgroundImage: `url(${dog!.imageURL})`,
+                  backgroundPosition: 'center',
+                  backgroundSize: '200%',
+                  backgroundRepeat: 'no-repeat',
+                }}
+              >
+                <h3 style={tagStyle}>{dog!.dogName}</h3>
+              </div>
+            </TinderCard>
+            <ProfileView open={open} onClose={handleClose} userInfo={dog!} />
+          </div>
         ))}
-        <div style={buttonsStyle}>
+        <div style={buttonListStyle}>
           <IconButton aria-label="delete" onClick={() => swipe('left')} style={{ boxShadow: '0 0 2px rgba(0,0,0,.2)' }}>
             <CloseIcon style={{ color: '#af2d2d' }} />
           </IconButton>
